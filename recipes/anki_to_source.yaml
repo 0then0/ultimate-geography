@@ -37,6 +37,8 @@
          capital hint: Capital hint
          flag: flag
          flag similarity: Flag similarity
+         flag note: Flag_Note
+         map note: Map_Note
          map: map
          tags: tags
 
@@ -54,3 +56,5 @@
           - file: src/data/capital_info.csv
           - file: src/data/capital_hint.csv
           - file: src/data/flag_similarity.csv
+          - file: src/data/flag_note.csv
+          - file: src/data/map_note.csv

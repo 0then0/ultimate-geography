@@ -1,0 +1,44 @@
+<div dir="__TEXT_DIRECTION__">
+{{#Flag}}
+<div class="ug-card">
+  <div class="ug-type">__FLAG_COUNTRY_LABEL__</div>
+  <div class="ug-image ug-flag value--front">{{Flag}}</div>
+  <div class="ug-separator"></div>
+  <div class="ug-answer ug-muted">__ASK_FLAG__</div>
+</div>
+{{/Flag}}
+</div>
+
+--
+
+<div dir="__TEXT_DIRECTION__">
+<div class="ug-card">
+  <div class="ug-type">__FLAG_COUNTRY_LABEL__</div>
+  <div class="ug-image ug-flag value--back">{{Flag}}</div>
+  <div class="ug-separator" id="answer"></div>
+  <div class="ug-answer">{{Country}}</div>
+  {{#Flag_Note}}
+  <div class="ug-note">{{Flag_Note}}</div>
+  {{/Flag_Note}}{{#Flag similarity}}
+  <div class="ug-note">__COMPARE__{{Flag similarity}}</div>
+  {{/Flag similarity}}
+  <div class="ug-details">
+    <div class="ug-label">__DETAILS_MAP__</div>
+    {{#Country info}}
+    <div class="ug-info">{{Country info}}</div>
+    {{/Country info}}{{#Capital}}
+    <div class="ug-info">__CAPITAL_PREFIX__{{Capital}}</div>
+    {{/Capital}}{{#Capital info}}
+    <div class="ug-info">{{Capital info}}</div>
+    {{/Capital info}}{{#Map}}
+    <div class="ug-media-block ug-map-block">
+      <div class="ug-label">__MAP_LABEL__</div>
+      <div class="ug-image ug-map">{{Map}}</div>
+      {{#Map_Note}}
+      <div class="ug-note">{{Map_Note}}</div>
+      {{/Map_Note}}
+    </div>
+    {{/Map}}
+  </div>
+</div>
+</div>

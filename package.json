@@ -1,0 +1,12 @@
+{
+  "name": "ultimate-geography-tools",
+  "version": "2026.10.20",
+  "private": true,
+  "scripts": {
+    "check": "biome check . --error-on-warnings",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15"
+  }
+}

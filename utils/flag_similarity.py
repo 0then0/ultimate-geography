@@ -3,7 +3,7 @@
 Pass the name of the two countries in lower-case, with underscores
 instead of spaces to the script.
 
-pipenv run utils/flag_similarity.py country_1 country_2
+uv run --locked python utils/flag_similarity.py country_1 country_2
 
 Checks colours and geometries (width:height).  Does not verify that
 the colours are in the same positions or indeed that the flags have
@@ -15,11 +15,11 @@ otherwise the comparison table becomes very long.
 
 Can also find the ΔE* colour difference of two hex-strings:
 
-pipenv run utils/flag_similarity.py colour_1 colour_2
+uv run --locked python utils/flag_similarity.py colour_1 colour_2
 
 e.g.
 
-pipenv run utils/flag_similarity.py '#a00' '#f00'
+uv run --locked python utils/flag_similarity.py '#a00' '#f00'
 
 (We're overloading the basic script invocation, rather than having two
 subcommands (`country`/`colour` `arg_1` `arg_2`), for reduced typing
@@ -29,23 +29,21 @@ distinguish.)
 """
 
 import argparse
-import re
 import logging
-
+import re
 import xml.etree.ElementTree as ET
-
-from typing import Self
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from fractions import Fraction
 
 logger = logging.getLogger(__name__)
 
-
+
 ## COLOUR DIFFERENCE CALCULATION
 
 # The conversion functions are taken from Wikipedia, but are also
 # compared with the reference spreadsheet:
 # https://github.com/anki-geo/ultimate-geography/issues/50#issuecomment-525902404
+
 
 @dataclass
 class SRGB:
@@ -57,12 +55,13 @@ class SRGB:
     Each component is in the range [0, 1].
 
     """
+
     R: float
     G: float
     B: float
 
     @classmethod
-    def from_hex(cls, hex_str: str) -> Self:
+    def from_hex(cls, hex_str: str) -> "SRGB":
         """Obtain sRGB values from hex string.
 
         e.g. "#fff"
@@ -82,40 +81,42 @@ class SRGB:
 
         colour_length = hex_length // 3
 
-        rgb_hexes = (hex_str[i * colour_length: (i+1) * colour_length] for i in (0, 1, 2))
+        rgb_hexes = (hex_str[i * colour_length : (i + 1) * colour_length] for i in (0, 1, 2))
         rgb_decs = (int(c, 16) for c in rgb_hexes)
-        R, G, B = (c/(16**colour_length - 1) for c in rgb_decs) # typically 255
+        R, G, B = (c / (16**colour_length - 1) for c in rgb_decs)  # typically 255
         return cls(R=R, G=G, B=B)
+
 
 @dataclass
 class LinearIntensityRGB:
     """Linear intensities sRGB
 
-    This corresponds to "Physically Linear RGB" in the reference
-    spreadsheet.
+       This corresponds to "Physically Linear RGB" in the reference
+       spreadsheet.
 
- https://en.wikipedia.org/w/index.php?title=SRGB&oldid=1290230423#Definition
+    https://en.wikipedia.org/w/index.php?title=SRGB&oldid=1290230423#Definition
 
-    Note that the reference spreadsheet uses terms of 0.0555 and
-    1.0555.  I believe that here Wikipedia is correct and the standard
-    values are indeed 0.055 and 1.055.
+       Note that the reference spreadsheet uses terms of 0.0555 and
+       1.0555.  I believe that here Wikipedia is correct and the standard
+       values are indeed 0.055 and 1.055.
 
     """
+
     R: float
     G: float
     B: float
 
     @classmethod
-    def from_srgb(cls, srgb: SRGB) -> Self:
+    def from_srgb(cls, srgb: SRGB) -> "LinearIntensityRGB":
         """Obtain physically linear sRGB from "raw" sRGB."""
+
         def intensity(x: float) -> float:
             if x <= 0.04045:
-                return x/12.92
-            return ((x + 0.055)/1.055) ** 2.4
+                return x / 12.92
+            return ((x + 0.055) / 1.055) ** 2.4
 
-        return cls(
-            **{c: intensity(v) for c, v in asdict(srgb).items()}
-        )
+        return cls(**{c: intensity(v) for c, v in asdict(srgb).items()})
+
 
 @dataclass
 class CIEXYZ:
@@ -124,12 +125,13 @@ class CIEXYZ:
     CIEXYZ in the reference spreadsheet.
 
     """
+
     X: float
     Y: float
     Z: float
 
     @classmethod
-    def from_linear_intensity(cls, rgb: LinearIntensityRGB) -> Self:
+    def from_linear_intensity(cls, rgb: LinearIntensityRGB) -> "CIEXYZ":
         """Convert from linear intensity to CIEXYZ.
 
         https://en.wikipedia.org/w/index.php?title=SRGB&oldid=1290230423#Primaries
@@ -141,6 +143,7 @@ class CIEXYZ:
 
         return cls(X=X, Y=Y, Z=Z)
 
+
 @dataclass
 class CIELAB:
     """CIELAB L*, a* and b* values.
@@ -148,12 +151,13 @@ class CIELAB:
     "CIELAB" fields in the reference spreadsheet.
 
     """
+
     L_star: float
     a_star: float
     b_star: float
 
     @classmethod
-    def from_ciexyz(cls, ciexyz: CIEXYZ) -> Self:
+    def from_ciexyz(cls, ciexyz: CIEXYZ) -> "CIELAB":
         """Convert from CIEXYZ to CIELAB.
 
         Equations from:
@@ -199,15 +203,16 @@ class CIELAB:
         (Y_n is always 100.)
 
         """
+
         def f(t):
-            delta = 6/29
+            delta = 6 / 29
 
             if t > delta**3:
-                return t**(1/3)
-            return t/(3 * delta**2) + 4/29
+                return t ** (1 / 3)
+            return t / (3 * delta**2) + 4 / 29
 
         X_n = 95.05
-        Y_n = 100.
+        Y_n = 100.0
         Z_n = 108.9
 
         # We're changing normalisation from [0, 1.0] to [0, 100.]
@@ -226,14 +231,10 @@ class CIELAB:
         )
 
     @classmethod
-    def from_hex(cls, hex_str: str) -> Self:
+    def from_hex(cls, hex_str: str) -> "CIELAB":
         """Obtain CIELAB value from hex string."""
         return cls.from_ciexyz(
-            CIEXYZ.from_linear_intensity(
-               LinearIntensityRGB.from_srgb(
-                   SRGB.from_hex(hex_str)
-               )
-            )
+            CIEXYZ.from_linear_intensity(LinearIntensityRGB.from_srgb(SRGB.from_hex(hex_str)))
         )
 
     @classmethod
@@ -245,9 +246,9 @@ class CIELAB:
         """
 
         return (
-            (c1.L_star - c2.L_star)**2 +
-            (c1.a_star - c2.a_star)**2 +
-            (c1.b_star - c2.b_star)**2
+            (c1.L_star - c2.L_star) ** 2
+            + (c1.a_star - c2.a_star) ** 2
+            + (c1.b_star - c2.b_star) ** 2
         ) ** 0.5
 
 
@@ -259,6 +260,7 @@ def delta_e_star_from_hex(hex_str_1: str, hex_str_2: str) -> float:
 
     return CIELAB.delta_e_star(c1, c2)
 
+
 def format_colour(hex_str: str) -> str:
     """Format the colour for printing in a terminal."""
     srgb = SRGB.from_hex(hex_str)
@@ -266,6 +268,7 @@ def format_colour(hex_str: str) -> str:
     g = round(255 * srgb.G)
     b = round(255 * srgb.B)
     return f"\033[48;2;{r};{g};{b}m{hex_str}\033[0m"
+
 
 def compare_colours(
     colour_1: str,
@@ -276,13 +279,9 @@ def compare_colours(
     difference = delta_e_star_from_hex(colour_1, colour_2)
 
     if use_colour:
-        print(
-            f"{format_colour(colour_1)}\t{format_colour(colour_2)}\t{difference:.2f}"
-        )
+        print(f"{format_colour(colour_1)}\t{format_colour(colour_2)}\t{difference:.2f}")
     else:
-        print(
-            f"{colour_1}\t{colour_2}\t{difference:.2f}"
-        )
+        print(f"{colour_1}\t{colour_2}\t{difference:.2f}")
 
 
 # NB HTML green is #008000!  We're using #0f0, because we're
@@ -296,6 +295,7 @@ STANDARD_COLOUR_GROUPS = {
     "green": CIELAB.from_hex("0f0"),
     "yellow": CIELAB.from_hex("ff0"),
 }
+
 
 def categorise_colour(hex_str: str) -> str:
     """Categorise colour.
@@ -331,12 +331,13 @@ def categorise_colour(hex_str: str) -> str:
 
     return current_name
 
-
+
 ## SVG PARSING
 
 HTML_COLOURS = {
     "red": "#f00",
 }
+
 
 def extract_flag_colours(filename: str) -> list[str]:
     """Extract the colours in a flag.
@@ -345,13 +346,14 @@ def extract_flag_colours(filename: str) -> list[str]:
     `fill` in the `style` attribute.
 
     """
+
     def parse_css_declaration(declaration: str) -> tuple[str, str]:
         """Parse a single CSS declaration obtaining the key and value."""
-        l = declaration.split(":")
-        if not len(l) == 2:
+        parts = declaration.split(":")
+        if not len(parts) == 2:
             raise ValueError(f"CSS declaration {declaration} is invalid!")
 
-        return (l[0], l[1])
+        return (parts[0], parts[1])
 
     def append_colour(colours: list[str], colour: str):
         """Append colour to existing colours list.
@@ -369,7 +371,7 @@ def extract_flag_colours(filename: str) -> list[str]:
         colour = colour.lower()
 
         if not colour[0] == "#":
-            if not colour in HTML_COLOURS:
+            if colour not in HTML_COLOURS:
                 raise ValueError(f"Invalid colour {colour}!")
             colour = HTML_COLOURS[colour]
         if colour not in colours:
@@ -397,6 +399,7 @@ def extract_flag_colours(filename: str) -> list[str]:
 
     return colours
 
+
 def extract_categorised_flag_colours(filename: str) -> dict[str, list[str]]:
     """Extract the colours in a flag categorised by colour-type.
 
@@ -420,6 +423,7 @@ def extract_categorised_flag_colours(filename: str) -> dict[str, list[str]]:
 
     return categorised_colours
 
+
 def compare_flag_colours(
     country_name_1: str,
     country_name_2: str,
@@ -427,8 +431,8 @@ def compare_flag_colours(
 ) -> None:
     """Compare the "matching" colours of the flags of two countries.
 
-    If use_colour=True show the colours in the background when printing
- the relevant hex-strings.
+       If use_colour=True show the colours in the background when printing
+    the relevant hex-strings.
 
     """
 
@@ -478,15 +482,13 @@ def compare_flag_colours(
             for c2 in flag2[category]:
                 difference = delta_e_star_from_hex(c1, c2)
                 if use_colour:
-                    print(
-                        f"{category}\t{format_colour(c1)}\t{format_colour(c2)}\t{difference:.2f}"
-                    )
+                    print(f"{category}\t{format_colour(c1)}\t{format_colour(c2)}\t{difference:.2f}")
                 else:
-                    print(
-                        f"{category}\t{c1}\t{c2}\t{difference:.2f}"
-                    )
+                    print(f"{category}\t{c1}\t{c2}\t{difference:.2f}")
+
 
 ## Proportions
+
 
 def flag_proportions(filename: str) -> Fraction:
     """Obtain the flag proportions."""
@@ -509,8 +511,9 @@ def flag_proportions(filename: str) -> Fraction:
     except ValueError:
         width_f, height_f = [float(x) for x in dimensions_str]
         logger.info("viewBox dimensions were floats!")
-        logger.info(f"Decimal ratio was {height_f/width_f}!")
-        return Fraction(height_f/width_f).limit_denominator(100)
+        logger.info(f"Decimal ratio was {height_f / width_f}!")
+        return Fraction(height_f / width_f).limit_denominator(100)
+
 
 def compare_flag_proportions(country_name_1: str, country_name_2: str) -> None:
     """Compare the proportions of the flags of two countries."""
@@ -532,7 +535,9 @@ def compare_flag_proportions(country_name_1: str, country_name_2: str) -> None:
         print(f"{country_name_1}: {prettify(proportions_1)}")
         print(f"{country_name_2}: {prettify(proportions_2)}")
 
+
 ## Parsing
+
 
 def parse_args() -> argparse.Namespace:
     """Parse args."""
@@ -542,11 +547,12 @@ def parse_args() -> argparse.Namespace:
         "--colour",
         action=argparse.BooleanOptionalAction,
         default=True,
-        help="show colours as background"
+        help="show colours as background",
     )
     args = parser.parse_args()
 
     return args
+
 
 def is_argument_colour(arg_1: str, arg_2: str) -> bool:
     """Determine if the arguments are colours or countries.
@@ -559,7 +565,6 @@ def is_argument_colour(arg_1: str, arg_2: str) -> bool:
             return True
         raise ValueError("Either zero or both arguments have to be colours!")
     return False
-
 
 
 if __name__ == "__main__":

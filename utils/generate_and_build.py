@@ -7,7 +7,7 @@ from pathlib import Path
 def validate_subtokens(tokens):
     toks = sorted(tokens, key=len)
     for i, a in enumerate(toks):
-        for b in toks[i + 1:]:
+        for b in toks[i + 1 :]:
             if a in b:
                 raise ValueError(f"Translation key '{a}' is a subset of key '{b}'")
 
@@ -54,9 +54,7 @@ def generate_templates():
     fieldnames, rows = load_translations(translations_path)
     base_files = [path for path in base_dir.iterdir()]
     output_dir.mkdir(parents=True, exist_ok=True)
-    english_base_case = [
-        ('name: Ultimate Geography [EN]', 'name: Ultimate Geography')
-    ]
+    english_base_case = [("name: Ultimate Geography [EN]", "name: Ultimate Geography")]
 
     for row in rows:
         language = row["__LANGUAGE_CODE__"]
@@ -65,7 +63,27 @@ def generate_templates():
         replacements = [(name, row[name]) for name in fieldnames]
 
         for base_path in base_files:
-            content = base_path.read_text(encoding="utf-8")
+            enriched = language in ("RU", "EN")
+            override = csv_root / "templates" / "ru-en" / base_path.name
+            source = override if enriched and override.is_file() else base_path
+            content = source.read_text(encoding="utf-8")
+            if enriched and base_path.suffix == ".yaml":
+                # Append fields to preserve the ordinals of the upstream fields.
+                content = content.replace(
+                    "templates:\n",
+                    "  - name: Flag_Note\n    font: Arial\n  - name: Map_Note\n    font: Arial\ntemplates:\n",
+                )
+                style = (
+                    "style_[Experimental].css" if "Experimental" in base_path.name else "style.css"
+                )
+                output_style = output_dir_folder / style
+                output_style.write_text(
+                    (csv_root / style).read_text(encoding="utf-8")
+                    + "\n"
+                    + (csv_root / "style_ru_en.css").read_text(encoding="utf-8"),
+                    encoding="utf-8",
+                )
+                content = content.replace(f"src/note_models/{style}", output_style.as_posix())
             rendered = apply_replacements(content, replacements)
             rendered = apply_replacements(rendered, english_base_case)
 

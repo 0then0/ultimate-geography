@@ -30,7 +30,7 @@ Italy,Rome,Rom,Roma,Rome,Roma,Řím,Рим,Rome,Rom,Roma,罗马(Rome),羅馬 (Ro
 Latvia,Riga,Riga,Riga,Riga,Riga,Riga,Рига,Riga,Riga,Riga,里加(Riga),里加 (Riga),Ryga,Riga,Riga,ריגה
 Liechtenstein,Vaduz,Vaduz,Vaduz,Vaduz,Vaduz,Vaduz,Вадуц,Vaduz,Vaduz,Vaduz,瓦杜兹(Vaduz),瓦杜茲 (Vaduz),Vaduz,Vaduz,Vaduz,ואדוץ
 Lithuania,Vilnius,Vilnius,Vilna,Vilnius,Vilnius,Vilnius,Вильнюс,Vilnius,Vilnius,Vilnius,维尔纽斯(Vilnius),維爾紐斯 (Vilnius),Wilno,Vilnius,Vilnius,וילנה
-Luxembourg,Luxembourg City,Luxemburg,Luxemburgo,Luxembourg,Luxembourg,Lucemburk,город Люксембург,Luxemburg,Luxemburg,Luxemburgo,卢森堡市(Luxembourg City),盧森堡市 (Luxembourg City),Luksemburg,Lussemburgo,Luxembourg,לוקסמבורג
+Luxembourg,Luxembourg City,Luxemburg,Luxemburgo,Luxembourg,Luxembourg,Lucemburk,Люксембург,Luxemburg,Luxemburg,Luxemburgo,卢森堡市(Luxembourg City),盧森堡市 (Luxembourg City),Luksemburg,Lussemburgo,Luxembourg,לוקסמבורג
 North Macedonia,Skopje,Skopje,Skopie,Skopje,Skopje,Skopje,Скопье,Skopje,Skopje,Escópia,斯科普里(Skopje),斯科普里 (Skopje),Skopje,Skopje,Skopje,סקופיה
 Malta,Valletta,Valletta,La Valeta,La Valette,Valletta,Valletta,Валлетта,Valletta,Valletta,Valeta,瓦莱塔(Valletta),瓦萊塔 (Valletta),Valletta,La Valletta,Valletta,ולטה
 Moldova,Chișinău,Chișinău,Chisináu,Chișinău,Chișinău,Kišiněv,Кишинёв,Chișinău,Chișinău,Quixinau,基希讷乌(Chișinău),基希訥烏 (Chișinău),Kiszyniów,Chișinău,Chisinau,קישינב
@@ -97,7 +97,7 @@ Seychelles,Victoria,Victoria,Victoria,Victoria,Victoria,Victoria,Виктори�
 Sierra Leone,Freetown,Freetown,Freetown,Freetown,Freetown,Freetown,Фритаун,Freetown,Freetown,Freetown,弗里敦(Freetown),自由城 (Freetown),Freetown,Freetown,Freetown,פריטאון
 South Africa,"Pretoria, Cape Town, Bloemfontein","Pretoria, Kapstadt, Bloemfontein","Pretoria, Ciudad del Cabo, Bloemfontein","Pretoria, Le Cap, Bloemfontein","Pretoria, Cape Town, Bloemfontein","Pretorie, Kapské Město, Bloemfontein","Претория, Кейптаун, Блумфонтейн","Pretoria, Kaapstad, Bloemfontein","Pretoria, Kapstaden, Bloemfontein","Pretória, Cidade do Cabo, Blumefontaina",比勒陀利亚(Pretoria)、开普敦(Cape Town)、布隆方丹(Bloemfontein),"普利托利亞、開普敦、布隆泉 (Pretoria, Cape Town, Bloemfontein)","Pretoria, Kapsztad, Bloemfontein","Pretoria, Città del Capo, Bloemfontein","Pretoria, Cape Town, Bloemfontein","פרטוריה, קייפטאון, בלומפונטיין"
 Sudan,Khartoum,Khartum,Jartum,Khartoum,Khartoum,Chartúm,Хартум,Khartoem,Khartoum,Cartum,喀土穆(Khartoum),喀土穆 (Khartoum),Chartum,Khartum,Khartoum,חרטום
-Eswatini,Mbabane,Mbabane,Mbabane,Mbabane,Mbabane,Mbabane,Мбабане,Mbabane,Mbabane,Mebabane,姆巴巴内(Mbabane),姆巴巴內市 (Mbabane),Mbabane,Mbabane,Mbabane,מבבנה
+Eswatini,"Mbabane, Lobamba",Mbabane,Mbabane,Mbabane,Mbabane,Mbabane,"Мбабане, Лобамба",Mbabane,Mbabane,Mebabane,姆巴巴内(Mbabane),姆巴巴內市 (Mbabane),Mbabane,Mbabane,Mbabane,מבבנה
 Tanzania,Dodoma,Dodoma,Dodoma,Dodoma,Dodoma,Dodoma,Додома,Dodoma,Dodoma,Dodoma,多多马(Dodoma),杜篤馬 (Dodoma),Dodoma,Dodoma,Dodoma,דודומה
 Togo,Lomé,Lomé,Lomé,Lomé,Lomé,Lomé,Ломе,Lomé,Lomé,Lomé,洛美(Lomé),洛梅 (Lomé),Lomé,Lomé,Lomé,לומה
 Tunisia,Tunis,Tunis,Túnez,Tunis,Tunis,Tunis,Тунис,Tunis,Tunis,Tunes,突尼斯(Tunis),突尼斯 (Tunis),Tunis,Tunisi,Tunis,תוניס
@@ -131,7 +131,7 @@ Maldives,Malé,Malé,Malé,Malé,Malé,Male,Мале,Malé,Malé,Malé,马累(Ma
 Malaysia,Kuala Lumpur,Kuala Lumpur,Kuala Lumpur,Kuala Lumpur,Kuala Lumpur,Kuala Lumpur,Куала-Лумпур,Kuala Lumpur,Kuala Lumpur,Quala Lumpur,吉隆坡(Kuala Lumpur),吉隆坡 (Kuala Lumpur),Kuala Lumpur,Kuala Lumpur,Kuala Lumpur,קואלה לומפור
 Oman,Muscat,Maskat,Mascate,Mascate,Muscat,Maskat,Маскат,Masqat,Muskat,Mascate,马斯喀特(Muscat),馬斯開特 (Muscat),Muskat,Mascate,Muscat,מסקט
 Nepal,Kathmandu,Kathmandu,Katmandú,Katmandou,Katmandu,Káthmándú,Катманду,Kathmandu,Katmandu,Catmandu,加德满都(Kathmandu),加德滿都 (Kathmandu),Katmandu,Katmandu,Katmandu,קטמנדו
-Palestine,Jerusalem,Jerusalem,Jerusalén,Jérusalem,Jerusalem,Jeruzalém,Иерусалим,Jeruzalem,Jerusalem,Jerusalém,耶路撒冷(Jerusalem),耶路撒冷 (Jerusalem),Jerozolima,Gerusalemme,Jerusalem,ירושלים
+Palestine,East Jerusalem,Jerusalem,Jerusalén,Jérusalem,Jerusalem,Jeruzalém,Восточный Иерусалим,Jeruzalem,Jerusalem,Jerusalém,耶路撒冷(Jerusalem),耶路撒冷 (Jerusalem),Jerozolima,Gerusalemme,Jerusalem,ירושלים
 Pakistan,Islamabad,Islamabad,Islamabad,Islamabad,Islamabad,Islámábád,Исламабад,Islamabad,Islamabad,Islamabade,伊斯兰堡(Islamabad),伊斯蘭馬巴德 (Islamabad),Islamabad,Islamabad,Islamabad,איסלמאבאד
 Qatar,Doha,Doha,Doha,Doha,Doha,Dauhá,Доха,Doha,Doha,Doa,多哈(Doha),杜哈 (Doha),Doha,Doha,Doha,דוחה
 Saudi Arabia,Riyadh,Riad,Riad,Riyad,Riyadh,Rijád,Эр-Рияд,Riyad,Riyadh,Riade,利雅得(Riyadh),利雅德 (Riyadh),Rijad,Riad,Riyadh,ריאד
@@ -168,7 +168,7 @@ Federated States of Micronesia,Palikir,Palikir,Palikir,Palikir,Palikir,Palikir,�
 Guam,Hagåtña,Hagåtña,Agaña,Hagåtña,Hagåtña,Hagåtña,Хагатна,Hagåtña,Hagåtña,Aganha,哈加特纳(Hagåtña),亞加納 (Hagåtña),Hagåtña,Hagåtña,Agana,הגטנה
 Vanuatu,Port Vila,Port Vila,Port Vila,Port-Vila,Vila,Port Vila,Порт-Вила,Port Vila,Port Vila,Porto Vila,维拉港(Port Vila),維拉港 (Port Vila),Port Vila,Port Vila,Port Vila,פורט וילה
 Canada,Ottawa,Ottawa,Ottawa,Ottawa,Ottawa,Ottawa,Оттава,Ottawa,Ottawa,Otava,渥太华(Ottawa),渥太華 (Ottawa),Ottawa,Ottawa,Ottawa,אוטווה
-United States of America,"Washington, D.C.","Washington, D.C.",Washington D. C.,Washington,"Washington, D.C.","Washington, D.C.","Вашингтон, округ Колумбия",Washington D.C.,"Washington, D.C.","Washington, D.C.","华盛顿特区(Washington, D.C.)","華盛頓DC (Washington, D.C.)",Waszyngton,Washington,Washington,וושינגטון די.סי.
+United States of America,"Washington, D.C.","Washington, D.C.",Washington D. C.,Washington,"Washington, D.C.","Washington, D.C.",Вашингтон,Washington D.C.,"Washington, D.C.","Washington, D.C.","华盛顿特区(Washington, D.C.)","華盛頓DC (Washington, D.C.)",Waszyngton,Washington,Washington,וושינגטון די.סי.
 Mexico,Mexico City,Mexiko-Stadt,Ciudad de México,Mexico,Mexico by,Ciudad de México,Мехико,Mexico-Stad,Mexico City,Cidade do México,墨西哥城(Mexico City),墨西哥城 (Mexico City),Meksyk,Città del Messico,Mexico City,מקסיקו סיטי
 Puerto Rico,San Juan,San Juan,San Juan,San Juan,San Juan,San Juan,Сан-Хуан,San Juan,San Juan,São João,圣胡安(San Juan),聖胡安 (San Juan),San Juan,San Juan,San Juan,סן חואן
 Cuba,Havana,Havanna,La Habana,La Havane,Havanna,Havana,Гавана,Havana,Havanna,Havana,哈瓦那(Havana),哈瓦那 (Havana),Hawana,L'Avana,Havanna,הוואנה
@@ -184,7 +184,7 @@ El Salvador,San Salvador,San Salvador,San Salvador,San Salvador,San Salvador,San
 Guatemala,Guatemala City,Guatemala-Stadt,Ciudad de Guatemala,Guatemala,Guatemala by,Ciudad de Guatemala,Гватемала,Guatemala-Stad,Guatemala City,Cidade da Guatemala,危地马拉市(Guatemala City),瓜地馬拉市 (Guatemala City),Gwatemala,Città del Guatemala,Guatemala City,גואטמלה סיטי
 Honduras,Tegucigalpa,Tegucigalpa,Tegucigalpa,Tegucigalpa,Tegucigalpa,Tegucigalpa,Тегусигальпа,Tegucigalpa,Tegucigalpa,Tegucigalpa,特古西加尔巴(Tegucigalpa),德古西加巴 (Tegucigalpa),Tegucigalpa,Tegucigalpa,Tegucigalpa,טגוסיגלפה
 Nicaragua,Managua,Managua,Managua,Managua,Managua,Managua,Манагуа,Managua,Managua,Manágua,马那瓜(Managua),馬納瓜 (Managua),Managua,Managua,Managua,מנגואה
-Panama,Panama City,Panama-Stadt,Ciudad de Panamá,Panama,Panama by,Panamá,Панама-Сити,Panama-stad,Panama City,Cidade do Panamá,巴拿马城(Panama City),巴拿馬城 (Panama City),Panama,Panama,Panama City,פנמה סיטי
+Panama,Panama City,Panama-Stadt,Ciudad de Panamá,Panama,Panama by,Panamá,Панама,Panama-stad,Panama City,Cidade do Panamá,巴拿马城(Panama City),巴拿馬城 (Panama City),Panama,Panama,Panama City,פנמה סיטי
 Antigua and Barbuda,St. John's,Saint John’s,Saint John,Saint John's,Saint John’s,Saint John's,Сент-Джонс,Saint John's,Saint John's,São João,圣约翰(St. John's),聖約翰 (St. John's),Saint John’s,Saint John's,St. John’s,סנט ג'ונס
 Dominica,Roseau,Roseau,Roseau,Roseau,Roseau,Roseau,Розо,Roseau,Roseau,Roseau,罗索(Roseau),羅索 (Roseau),Roseau,Roseau,Roseau,רוזו
 Saint Vincent and the Grenadines,Kingstown,Kingstown,Kingstown,Kingstown,Kingstown,Kingstown,Кингстаун,Kingstown,Kingstown,Kingstown,金斯敦(Kingstown),金石城 (Kingstown),Kingstown,Kingstown,Kingstown,קינגסטאון

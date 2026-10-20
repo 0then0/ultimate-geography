@@ -7,3 +7,7 @@ src/note_models/templates/generated/
 Thumbs.db
 ~$*
 .idea
+__pycache__/
+.venv/
+.ruff_cache/
+node_modules/

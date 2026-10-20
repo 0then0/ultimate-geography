@@ -1,0 +1,293 @@
+.card {
+  --ug-bg: #f1f3f5;
+  --ug-panel: #ffffff;
+  --ug-subpanel: #f7f8fa;
+  --ug-text: #18212f;
+  --ug-muted: #647084;
+  --ug-border: #dce1e7;
+  --ug-accent: #b82f39;
+  margin: 0;
+  padding: 8px 8px 16px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 20px;
+  line-height: 1.5;
+  text-align: left;
+  color: var(--ug-text);
+  background: var(--ug-bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+.ug-card,
+.ug-card * {
+  box-sizing: border-box;
+}
+.ug-card {
+  container-type: inline-size;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 28px 32px;
+  background: var(--ug-panel);
+  border: 1px solid var(--ug-border);
+  border-radius: 16px;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.ug-type,
+.ug-label {
+  color: var(--ug-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.ug-type {
+  margin: 0 0 14px;
+}
+.ug-label {
+  margin: 0 0 10px;
+}
+.ug-main,
+.ug-answer {
+  margin: 8px 0;
+  color: var(--ug-accent);
+  font-weight: 750;
+  line-height: 1.22;
+  overflow-wrap: anywhere;
+}
+.ug-main {
+  font-size: 34px;
+}
+.ug-answer {
+  font-size: 36px;
+}
+.ug-answer.ug-muted {
+  color: var(--ug-muted);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.ug-info {
+  max-width: 100ch;
+  margin: 10px 0 14px;
+  color: var(--ug-muted);
+  font-size: 18px;
+  font-style: normal;
+}
+.ug-note {
+  max-width: 100ch;
+  margin: 12px 0 0;
+  color: var(--ug-text);
+  font-size: 17px;
+  line-height: 1.5;
+}
+.ug-separator {
+  margin: 18px 0;
+  border: 0;
+  border-top: 1px solid var(--ug-border);
+}
+.ug-details {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ug-border);
+}
+.ug-media-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  margin-top: 18px;
+}
+.ug-media-grid > *,
+.ug-image {
+  min-width: 0;
+  max-width: 100%;
+}
+.ug-media-block {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--ug-border);
+  border-radius: 12px;
+  background: var(--ug-subpanel);
+}
+.ug-details > .ug-media-block {
+  margin-top: 18px;
+}
+.ug-details > .ug-map-block {
+  max-width: 796px;
+}
+.ug-details > .ug-flag-block {
+  max-width: 420px;
+}
+.ug-card > .ug-map {
+  max-width: 760px;
+}
+.ug-image img {
+  display: block;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  margin: 0;
+  object-fit: contain;
+}
+.ug-flag img {
+  max-height: 240px;
+  border: 1px solid var(--ug-border);
+  background: #ffffff;
+}
+.ug-map img {
+  width: 100% !important;
+  max-width: 760px !important;
+  max-height: 430px;
+  object-position: left top;
+}
+.ug-card > .ug-map img {
+  max-height: 460px;
+}
+.ug-card a {
+  color: #2762aa;
+  text-decoration: underline;
+}
+
+.nightMode.card,
+.night_mode.card,
+.nightMode .card,
+.night_mode .card {
+  --ug-bg: #1f1f1f;
+  --ug-panel: #292929;
+  --ug-subpanel: #232323;
+  --ug-text: #e8edf3;
+  --ug-muted: #b0bac8;
+  --ug-border: #42464d;
+  --ug-accent: #ff8989;
+}
+.nightMode .ug-card a,
+.night_mode .ug-card a {
+  color: #91bfff;
+}
+
+.value--front > img[src*="-blur"] + img {
+  display: none;
+}
+.value--back > img[src*="-blur"] {
+  display: none;
+}
+
+@container (max-width: 820px) {
+  .ug-media-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (max-width: 900px) {
+  .card {
+    padding: 14px;
+    font-size: 18px;
+  }
+  .ug-card {
+    padding: 20px;
+  }
+  .ug-media-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .ug-main {
+    font-size: 30px;
+  }
+  .ug-answer {
+    font-size: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .card {
+    padding: 8px 8px 16px;
+    font-size: 17px;
+  }
+  .ug-card {
+    padding: 18px 16px;
+    border-radius: 12px;
+  }
+  .ug-type {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+  .ug-main {
+    font-size: 28px;
+  }
+  .ug-answer {
+    font-size: 30px;
+  }
+  .ug-answer.ug-muted {
+    font-size: 17px;
+  }
+  .ug-info,
+  .ug-note {
+    font-size: 16px;
+  }
+  .ug-separator {
+    margin: 16px 0;
+  }
+  .ug-details {
+    margin-top: 18px;
+    padding-top: 16px;
+  }
+  .ug-media-block {
+    padding: 12px;
+  }
+  .ug-flag img {
+    max-height: 200px;
+  }
+  .ug-map img,
+  .ug-card > .ug-map img {
+    max-height: 280px;
+  }
+}
+/* AnkiDroid marks its reviewer as mobile. Use the container width even
+   when the embedded WebView reports an unexpectedly wide viewport. */
+.mobile.card {
+  padding: 8px 8px 16px;
+  font-size: 17px;
+}
+.mobile .ug-card {
+  width: 100%;
+  padding: 18px 16px;
+  border-radius: 12px;
+}
+.mobile .ug-type {
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+.mobile .ug-main {
+  font-size: 28px;
+}
+.mobile .ug-answer {
+  font-size: 30px;
+}
+.mobile .ug-answer.ug-muted {
+  font-size: 17px;
+}
+.mobile .ug-info,
+.mobile .ug-note {
+  font-size: 16px;
+}
+.mobile .ug-separator {
+  margin: 16px 0;
+}
+.mobile .ug-media-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.mobile .ug-media-block {
+  padding: 12px;
+}
+.mobile .ug-flag img {
+  max-height: 200px;
+}
+.mobile .ug-map img,
+.mobile .ug-card > .ug-map img {
+  max-height: 280px;
+}

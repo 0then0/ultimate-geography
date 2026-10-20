@@ -1,0 +1,44 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="160"
+  height="160"
+  viewBox="0 0 160 160"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">Ultimate Geography</title>
+  <desc id="desc">Study cards with a globe, a capital marker and a flag.</desc>
+  <rect x="31" y="19" width="108" height="128" rx="15" fill="#dce7ee" transform="rotate(7 85 83)" />
+  <rect
+    x="17"
+    y="12"
+    width="112"
+    height="132"
+    rx="15"
+    fill="#fff"
+    stroke="#23465a"
+    stroke-width="4"
+  />
+  <circle cx="73" cy="72" r="38" fill="#eaf4f6" stroke="#23465a" stroke-width="3" />
+  <ellipse cx="73" cy="72" rx="18" ry="38" fill="none" stroke="#57939a" stroke-width="2" />
+  <path d="M35 72h76M41 52h64M41 92h64" fill="none" stroke="#57939a" stroke-width="2" />
+  <path
+    d="M94 40a11 11 0 0 0-11 11c0 8 11 24 11 24s11-16 11-24a11 11 0 0 0-11-11Z"
+    fill="#b82f39"
+    stroke="#fff"
+    stroke-width="2"
+  />
+  <circle cx="94" cy="51" r="4" fill="#fff" />
+  <rect
+    x="42"
+    y="115"
+    width="22"
+    height="14"
+    rx="0.5"
+    fill="#b82f39"
+    stroke="#23465a"
+    stroke-width="2.5"
+  />
+  <path d="M42 114v21" stroke="#23465a" stroke-width="2.5" stroke-linecap="round" />
+  <path d="M80 119h25m-25 11h18" stroke="#23465a" stroke-width="3" stroke-linecap="round" />
+</svg>

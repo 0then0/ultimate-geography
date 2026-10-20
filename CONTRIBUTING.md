@@ -1,5 +1,12 @@
 # Contributing
 
+For this fork's RU/EN distribution, use the current build, migration and validation
+instructions in [README.md](README.md) or [README.ru.md](README.ru.md). The two
+additional fields are `Flag_Note` and `Map_Note`, stored in `flag_note.csv` and
+`map_note.csv`. Their English and Russian values are mapped in both forward
+recipes; the English reverse recipes preserve them too. Shared enriched templates
+and CSS apply only to RU/EN; the remaining upstream language templates are retained.
+
 :wave: Hello there! :tada: Thanks for taking the time to contribute!
 
 Seen something outdated or plain wrong? Spotted a typo somewhere? Think something could be better translated, or want to translate the whole deck into a new language? Awesome! :100: Let us know right away by [opening a new issue](https://github.com/anki-geo/ultimate-geography/issues).
@@ -52,57 +59,54 @@ Ready to start working on an issue? Here is what you need to know.
 
 The deck is managed with [Brain Brew][Brain Brew], a deck manager that allows transforming _Ultimate Geography_ back and forth between its CrowdAnki JSON representation and a format that is easy for humans to read, modify and version-control (currently CSV). This means that one can edit this deck either here, in this repository, or in Anki itself.
 
-Brain Brew and its dependencies are managed with [Pipenv](https://pipenv-fork.readthedocs.io/en/latest/basics.html). Running Brain Brew inside a virtual environment guarantees that is not hampered by individual setups.
+Brain Brew and its dependencies are managed with [uv](https://docs.astral.sh/uv/). Dependencies are locked in `uv.lock`; CPython 3.10–3.15 (standard GIL builds) is supported, with `.python-version` selecting 3.14 by default. Use `UV_PYTHON` or `uv run --python` to choose another supported version. Ruff, Biome and the optional Anki export group are described in the README.
 
 The content of the deck is stored in multiple CSV files under `src/data`. The main file is `main.csv`. Each row corresponds to a note and each column to a field.
 
 Translated fields, such as _Country_ or _Capital info_, have their own CSV files called _derivatives_, in which each column corresponds to one language. The _Country_ field is used to map rows in the derivatives with notes in `main.csv`. The mapping is not necessarily one to one: if a note has no capital (e.g. because it's a water body), then it must not appear in `capital.csv`.
 
-The note model templates are generated from the base templates in `src/note_models/templates/base` and the per-language substitutions in `src/note_models/translations.csv`. The rendered templates live in `src/note_models/templates/generated` and should not be edited directly. Regenerate them with `pipenv run generate_templates` (or `pipenv run build`, which calls `utils/generate_and_build.py`).
+The note model templates are generated from the base templates in `src/note_models/templates/base` and the per-language substitutions in `src/note_models/translations.csv`. The rendered templates live in `src/note_models/templates/generated` and should not be edited directly. Regenerate them with `uv run --locked python utils/generate_and_build.py`.
 
 ### Getting started
 
 1. Fork and clone this repository on your machine.
-1. [Install Python 3.7](https://www.python.org/downloads/release/python-379/)
-   - During the installation, make sure to install `pip` (it's optional) and to tick _Add Python 3.7 to PATH_.
-1. Install Pipenv with `pip install pipenv`.
-   - If the `pip` executable is not available, try `pip3 install pipenv` instead.
-1. In the root directory of your fork, run `pipenv install` to install Brain Brew and its dependencies in a new virtual environment.
-1. Generate note model templates with `pipenv run generate_templates`.
-1. You can now run this deck's Brain Brew recipes with `pipenv run brain_brew run recipes/<filename>.yaml`.
-   - Alternatively, run `pipenv run build` to both generate the templates and build the deck for Anki with the `source_to_anki.yaml` recipe.
+1. Install uv and use the Python 3.14 version selected by `.python-version`.
+1. In the repository root, run `uv sync --locked` to create or update `.venv` from `uv.lock`.
+1. Generate note model templates with `uv run --locked python utils/generate_and_build.py`.
+1. You can now run this deck's Brain Brew recipes with `uv run --locked brain_brew run recipes/<filename>.yaml`.
+   - Alternatively, run `uv run --locked python utils/generate_and_build.py recipes/source_to_anki.yaml` to both generate the templates and build the deck for Anki with the `source_to_anki.yaml` recipe.
 
 ### Brain Brew recipes
 
 #### Source to Anki
 
 ```bash
-pipenv run brain_brew run recipes/source_to_anki.yaml
+uv run --locked brain_brew run recipes/source_to_anki.yaml
 ```
 
 This recipe builds the deck from source in a format that can be imported into Anki with the CrowdAnki add-on. More precisely, it generates every possible version of the deck (i.e. standard + extended, in every language) into sub-folders inside the `build` folder. Each of these sub-folders includes a CrowdAnki JSON file and all of the deck's images.
 
 On first run, this recipe generates all the missing files and folders in the `build` folder, logging warnings in the output. Upon subsequent runs, the warnings disappear.
 
-If you update `src/note_models/templates/base` or `src/note_models/translations.csv`, run `pipenv run generate_templates` (or just use `pipenv run build`) before running Brain Brew directly.
+If you update `src/note_models/templates/base` or `src/note_models/translations.csv`, run `uv run --locked python utils/generate_and_build.py` (or just use `uv run --locked python utils/generate_and_build.py recipes/source_to_anki.yaml`) before running Brain Brew directly.
 
 #### Anki to Source
 
 ```bash
-pipenv run brain_brew run recipes/anki_to_source.yaml
+uv run --locked brain_brew run recipes/anki_to_source.yaml
 ```
 
 or
 
 ```bash
-pipenv run brain_brew run recipes/anki_to_source_[extended].yaml
+uv run --locked brain_brew run 'recipes/anki_to_source_[extended].yaml'
 ```
 
 These recipes allows editing the English standard or extended deck in Anki, and then pulling the changes into the CSVs. Other languages are currently not supported. It also does not support editing the note model, card templates, deck description, etc. -- only the content of the notes.
 
 1. Make your edits in Anki.
 1. Export the deck with CrowdAnki into the `build/Ultimate Geography [EN]` or `build/Ultimate Geography [EN] [Extended]` folders for the standard and extended decks respectively.
-1. Run `pipenv run brain_brew run recipes/anki_to_source.yaml` or `pipenv run brain_brew run recipes/anki_to_source_[extended].yaml`.
+1. Run `uv run --locked brain_brew run recipes/anki_to_source.yaml` or `uv run --locked brain_brew run 'recipes/anki_to_source_[extended].yaml'`.
 1. Any new media will be placed at the top level of the `src/media` folder and will need to be moved into the appropriate sub-folder.
 
 ### How-to's
@@ -398,15 +402,15 @@ Content changes, such as adding a note, replacing an image, or translating the d
 
 1. Open a discussion thread named _Prepare for v[x.y]_ a few weeks ahead of the release to coordinate any remaining work.
 1. When ready to release, bump the version number in `src/headers/desc.html`.
-1. Run `pipenv run build`.
+1. Run `uv run --locked python utils/generate_and_build.py recipes/source_to_anki.yaml`.
 1. In Anki, synchronise all your devices then upgrade the standard English deck by following the recommended procedure, which was agreed upon in the discussion thread. Synchronise all your devices again once the upgrade is complete.
 1. With the help of the Anki card browser, update the notes/cards stats in both `desc.html` and `README.md`, and commit the changes (including the version bump).
-1. Run `pipenv run build` again. If there is an experimental deck to be released, also run `pipenv run build_experimental`.
+1. Run `uv run --locked python utils/generate_and_build.py recipes/source_to_anki.yaml` again. If there is an experimental deck to be released, also run `uv run --locked python utils/generate_and_build.py 'recipes/source_to_anki_[experimental].yaml'`.
 1. Reimport the standard English deck in Anki and synchronise with AnkiWeb.
 1. Add each folder in the `build` directory to a separate ZIP archive named as follows:
    - `Ultimate Geography [EN]` ==> `Ultimate_Geography_v[x.y]_EN.zip`.
    - `Ultimate Geography [EN] [Extended]` ==> `Ultimate_Geography_v[x.y]_EN_EXTENDED.zip`.
-   This can be done with `pipenv run zip`.
+   This can be done with `uv run --locked python utils/zip_decks.py`.
 1. On GitHub, create a new **release** named after the version number.
 1. Draft the release notes, making sure to add a link to the upgrade steps in the `README` and/or [in the wiki](https://github.com/anki-geo/ultimate-geography/wiki/Upgrade-instructions).
 1. Attach all the ZIP files and save the draft release notes.
