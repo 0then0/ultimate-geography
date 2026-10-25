@@ -37,8 +37,12 @@
       "includes": ["src/note_models/*.css"],
       "linter": {
         "rules": {
-          "style": { "noDescendingSpecificity": "off" },
-          "complexity": { "noImportantStyles": "off" }
+          "style": {
+            "noDescendingSpecificity": "off"
+          },
+          "complexity": {
+            "noImportantStyles": "off"
+          }
         }
       }
     }

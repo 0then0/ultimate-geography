@@ -1,4 +1,4 @@
-"""Export the existing Brain Brew RU/EN builds using Anki's own backend.
+"""Export the existing Brain Brew localized builds using Anki's own backend.
 
 Run with a Python environment containing Anki (see README). No user collection
 is ever opened. Numeric model IDs are stable; note identity is the source GUID.
@@ -16,10 +16,9 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 from anki.collection import Collection
 from anki.import_export_pb2 import ExportAnkiPackageOptions, ExportLimit
+from locales import LANGUAGES, MODEL_IDS, RELEASE, SOURCE_EPOCH
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL_IDS = {"RU": 1574587964637, "EN": 1600000000001}
-RELEASE = "2026.10.20"
 
 
 def media_names(fields):
@@ -76,7 +75,7 @@ def export(language, output):
             did = col.decks.add_normal_deck_with_name(f"Ultimate Geography [{language}]").id
             d = col.decks.get(did)
             d["desc"] = (
-                "Ultimate Geography RU/EN fork. 323 notes, 982 cards. "
+                "Ultimate Geography multilingual fork. 323 notes, 982 cards. "
                 "Sources and licenses accompany this package in the release ZIP."
             )
             col.decks.update_dict(d)
@@ -92,7 +91,7 @@ def export(language, output):
             assert not col.get_empty_cards().notes
             assert col.db.scalar("select count(*) from revlog") == 0
             # Fixed source revision date allows ordinary Anki 'if newer' updates.
-            epoch = int(os.environ.get("SOURCE_DATE_EPOCH", "1792454400"))
+            epoch = int(os.environ.get("SOURCE_DATE_EPOCH", str(SOURCE_EPOCH)))
             col.db.execute("update notes set mod=?", epoch)
             col.db.execute("update notetypes set mtime_secs=?", epoch)
             col.export_anki_package(
@@ -138,6 +137,9 @@ def package_release(package):
         ROOT / "README.md",
         ROOT / "README.ru.md",
         ROOT / "CONTRIBUTING.md",
+        ROOT / "CHANGELOG.md",
+        ROOT / "CODE_OF_CONDUCT.md",
+        ROOT / "SECURITY.md",
         ROOT / "doc" / "content-sources.csv",
         ROOT / "doc" / "icon.svg",
         ROOT / "doc" / "reference-audit.json",
@@ -153,10 +155,10 @@ def package_release(package):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--language", choices=["RU", "EN"], action="append")
+    parser.add_argument("--language", choices=LANGUAGES, action="append")
     parser.add_argument("--output", type=Path, default=ROOT / "build" / "releases")
     args = parser.parse_args()
-    for language in args.language or ["RU", "EN"]:
+    for language in args.language or LANGUAGES:
         export(language, args.output.resolve())
 
 

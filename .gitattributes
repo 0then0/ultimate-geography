@@ -1,0 +1,19 @@
+# Keep editable sources consistent on every supported development platform.
+* text=auto eol=lf
+*.csv text eol=lf
+*.svg text eol=lf
+
+# Preserve third-party media, workbook and package bytes.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.xlsx binary
+*.apkg binary
+*.zip binary
+
+# These third-party assets are hash-bound in media-attribution.csv.
+# Preserve SVG and experimental JS/CSS bytes as well as raster images.
+src/media/** -text

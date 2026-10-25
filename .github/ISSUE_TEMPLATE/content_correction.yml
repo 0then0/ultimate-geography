@@ -1,0 +1,24 @@
+name: Geography or translation correction
+description: Propose a sourced correction to a country, capital, flag, map or translation.
+body:
+  - type: input
+    id: note
+    attributes:
+      label: Note and language
+      placeholder: Country or feature name, language code and affected card/field
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Current wording and proposed correction
+      description: Explain the distinction between a capital, government seat, claim or planned relocation when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources and date checked
+      description: Link primary sources for factual changes. For wording-only corrections, explain the preferred local usage. For replacement media, include origin, creator, license and modifications.
+    validations:
+      required: true

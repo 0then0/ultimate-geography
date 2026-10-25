@@ -1,15 +1,54 @@
 # Contributing
 
-For this fork's RU/EN distribution, use the current build, migration and validation
-instructions in [README.md](README.md) or [README.ru.md](README.ru.md). The two
-additional fields are `Flag_Note` and `Map_Note`, stored in `flag_note.csv` and
-`map_note.csv`. Their English and Russian values are mapped in both forward
-recipes; the English reverse recipes preserve them too. Shared enriched templates
-and CSS apply only to RU/EN; the remaining upstream language templates are retained.
+For this fork's current distribution, follow [README.md](README.md) for build,
+import/update and verification commands. The enriched interface and explanation
+fields apply to RU, EN, ES, DE, FR, JA and PT-BR. Other upstream languages keep
+their existing templates. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for conduct
+and [SECURITY.md](SECURITY.md) for private security reporting.
 
-:wave: Hello there! :tada: Thanks for taking the time to contribute!
+## Localized source workflow
 
-Seen something outdated or plain wrong? Spotted a typo somewhere? Think something could be better translated, or want to translate the whole deck into a new language? Awesome! :100: Let us know right away by [opening a new issue](https://github.com/anki-geo/ultimate-geography/issues).
+The new explanations live in `src/data/flag_note.csv` and `map_note.csv`.
+English uses the unsuffixed field; other languages use `:<code>`, including
+`:ja` and `:pt-br`. Add or edit translations in the existing derivative CSVs.
+Do not add fallback English to make a missing translation pass validation.
+Keep country keys, existing GUIDs, field order and note-model identities stable.
+European Portuguese `:pt` and Brazilian Portuguese `:pt-br` are separate.
+
+Shared four-direction templates are in `src/note_models/templates/shared`, CSS
+in `src/note_models/style_shared.css`, and labels/HTML language tags in
+`src/note_models/translations.csv`. `utils/locales.py` defines the supported
+public languages and stable APKG model IDs. JA/PT-BR GUIDs were populated once;
+builds must not regenerate them. Both forward recipes support all seven variants.
+The English reverse recipes retain the extra fields; reverse editing of other
+languages is not implemented.
+
+Existing DE/ES/FR geographical names were retained where compatible with the
+English content. New explanation translations and Japanese names were prepared
+with machine assistance, followed by terminology/exonym corrections. PT-BR starts
+from upstream Portuguese with Brazilian spelling and corrections. They are
+editable source text and do not require a translation service during a build.
+Native-language editorial review is welcome, particularly for Japanese prose.
+Keep links/HTML intact and use dated primary sources for factual changes.
+
+Before submitting, build both recipes, run `verify_sources.py`, export all seven
+APKGs, and run:
+
+```sh
+uv run --locked ruff check .
+uv run --locked ruff format --check .
+npm ci --ignore-scripts
+npm run check
+uv run --locked --group export python -m unittest discover -s utils -p 'test_*.py' -v
+```
+
+Use `npm run format` for supported JS/CSS/JSON and `uv run --locked ruff format .`
+for Python. Biome does not format CSV/YAML/Markdown here; do not feed Anki HTML
+through a formatter that may change its standalone `--` separator. Review diffs
+for accidental data, link, license or GUID changes. Template/translation changes
+also require `verify_release.py` followed by `node utils/verify_layout.cjs` with
+an existing Playwright/Chromium installation. Check narrow and desktop widths,
+both themes, Japanese glyphs and long names. Generated reports stay in `build/`.
 
 #### Table of contents
 
@@ -399,6 +438,14 @@ The releases follow a versioning scheme of the form `x.y`, where:
 Content changes, such as adding a note, replacing an image, or translating the deck into a new language, all constitute minor changes. A change is considered major when users are likely to **lose a significant part of their progress** when upgrading the deck with CrowdAnki.
 
 ### Release process
+
+For this fork, update the date/version in `utils/locales.py`, `pyproject.toml`,
+`package.json` and their lockfiles, record the changes in `CHANGELOG.md`, build,
+validate and export the seven standard packages. Export creates ZIPs containing
+licenses and attribution. Do not commit generated packages; publish only after
+reviewing the exact artifacts and checksums. The following upstream procedure
+is retained as reference for its CrowdAnki/AnkiWeb workflow.
+
 
 1. Open a discussion thread named _Prepare for v[x.y]_ a few weeks ahead of the release to coordinate any remaining work.
 1. When ready to release, bump the version number in `src/headers/desc.html`.

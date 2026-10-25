@@ -1,6 +1,6 @@
 {
   "name": "ultimate-geography-tools",
-  "version": "2026.10.20",
+  "version": "2026.10.25",
   "private": true,
   "scripts": {
     "check": "biome check . --error-on-warnings",

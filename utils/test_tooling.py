@@ -1,5 +1,7 @@
-"""Regression checks for release tooling; build and export RU/EN before running."""
+"""Regression checks for release tooling; build and export all supported languages before running."""
 
+import csv
+import hashlib
 import json
 import os
 import subprocess
@@ -8,6 +10,8 @@ import tempfile
 import unittest
 from pathlib import Path
 from zipfile import ZipFile
+
+from locales import LANGUAGES
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -34,6 +38,57 @@ class ToolingTests(unittest.TestCase):
 
     def assert_success(self, result):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_existing_note_identities_are_preserved(self):
+        # These are the five established language identities before adding JA/PT-BR.
+        expected = {
+            "RU": "add78b038a2baef2a543ade99e835bc04ed160abd251f7e8260fcffd4a6cb08f",
+            "EN": "add3b4622985631f0ac68ba2511250de7f268375b551cd00895110d82a0cda42",
+            "ES": "3f35b5dc358e53b9c21fc9e544b08ffb37c4cbc22fac157bd5950b7e4bfe0e22",
+            "DE": "a418bb57dc4c6b6dd442010272bda6263126c49828fd10ffce4c4ac8a0694327",
+            "FR": "2a1c3200e3ae42bbd8c80b4f85ae43a970963f9f27625dc711b97a34c127c0f4",
+        }
+        with (ROOT / "src/data/guid.csv").open(encoding="utf-8", newline="") as f:
+            rows = list(csv.DictReader(f))
+        for language, digest in expected.items():
+            column = "guid" if language == "EN" else "guid:" + language.lower()
+            actual = hashlib.sha256(
+                json.dumps(
+                    {r["country"]: r[column] for r in rows},
+                    ensure_ascii=False,
+                    sort_keys=True,
+                ).encode()
+            ).hexdigest()
+            self.assertEqual(actual, digest, language)
+        portuguese = {r["guid:pt"] for r in rows}
+        brazilian = {r["guid:pt-br"] for r in rows}
+        self.assertFalse(portuguese & brazilian)
+
+    def test_local_exonyms_and_brazilian_variant_selection(self):
+        with (ROOT / "src/data/country.csv").open(encoding="utf-8", newline="") as f:
+            countries = {r["country"]: r for r in csv.DictReader(f)}
+        with (ROOT / "src/data/capital.csv").open(encoding="utf-8", newline="") as f:
+            capitals = {r["country"]: r for r in csv.DictReader(f)}
+        for country, expected in {
+            "Jordan": "ヨルダン",
+            "Java": "ジャワ島",
+            "English Channel": "イギリス海峡",
+        }.items():
+            self.assertEqual(countries[country]["country:ja"], expected)
+        self.assertEqual(countries["North Macedonia"]["country:pt-br"], "Macedônia do Norte")
+        self.assertEqual(countries["Egypt"]["country:pt-br"], "Egito")
+        self.assertEqual(countries["Bangladesh"]["country:pt-br"], "Bangladesh")
+        self.assertEqual(capitals["Russia"]["capital:pt-br"], "Moscou")
+        self.assertEqual(capitals["Netherlands"]["capital:pt-br"], "Amsterdã")
+        for path in (ROOT / "src/data").glob("*.csv"):
+            with path.open(encoding="utf-8", newline="") as f:
+                for row in csv.DictReader(f):
+                    for column, value in row.items():
+                        if column.endswith(":pt-br"):
+                            self.assertNotIn("(BR)", value, (path.name, row["country"]))
+                            self.assertNotIn("(PT)", value, (path.name, row["country"]))
+                            for spelling in ["Polónia", "Roménia", "Irão", "Bangladexe"]:
+                                self.assertNotIn(spelling, value, (path.name, row["country"]))
 
     def test_zip_ignores_service_folders_and_preserves_deck_files(self):
         with tempfile.TemporaryDirectory(prefix="ug-zip-test-") as tmp:
@@ -91,14 +146,18 @@ class ToolingTests(unittest.TestCase):
             self.assert_success(result)
             report = json.loads((qa / "release-verification.json").read_text(encoding="utf-8"))
             self.assertEqual(report["bilingual_both_orders"], {"notes": 646, "cards": 1964})
-            for language in ["RU", "EN"]:
+            for language in LANGUAGES:
                 self.assertTrue(
                     report["languages"][language][
                         "independent_rebuild_updates_fields_and_preserves_history"
                     ]
                 )
+            self.assertEqual(
+                report["multilingual_both_orders"],
+                {"notes": 323 * len(LANGUAGES), "cards": 982 * len(LANGUAGES)},
+            )
             cards = json.loads((qa / "cards.json").read_text(encoding="utf-8"))
-            self.assertEqual(len(cards), 3928)
+            self.assertEqual(len(cards), 1964 * len(LANGUAGES))
             self.assertTrue(any(c["country"] == "Соединённые Штаты Америки" for c in cards))
 
 

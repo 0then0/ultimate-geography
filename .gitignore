@@ -1,13 +1,24 @@
-archiver/
-build/
-vendor/
-src/note_models/templates/generated/
+# Generated decks, release packages, browser reports and historical tooling.
+/build/
+/archiver/
+/vendor/
+/src/note_models/templates/generated/
 
+# Local Python and Node environments and caches.
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+node_modules/
+npm-debug.log*
+
+# Local configuration and credentials; examples remain versioned.
+.env
+.env.*
+!.env.example
+
+# Editor and operating-system files.
 .DS_Store
 Thumbs.db
 ~$*
-.idea
-__pycache__/
-.venv/
-.ruff_cache/
-node_modules/
+.idea/

@@ -1,0 +1,47 @@
+name: Build, import or display bug
+description: Report a reproducible problem with the tooling or a generated deck.
+labels: []
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Release or commit
+      placeholder: v2026.10.20 or a commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Deck language
+      options:
+        - RU
+        - EN
+        - ES
+        - DE
+        - FR
+        - JA
+        - PT-BR
+        - Other upstream variant
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Anki client/version, Python version, or browser and viewport as relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction and expected result
+      description: Include the exact command or import settings and the steps that reproduce the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Add relevant logs or screenshots. Remove personal collection data, credentials and review history.
+    validations:
+      required: true

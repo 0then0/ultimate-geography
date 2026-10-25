@@ -17,8 +17,16 @@
       - guid:it
       - guid:da
       - guid:he
+      - guid:ja
+      - guid:pt-br
 
 - build_parts:
+  - note_model_from_yaml_part:
+      part_id: Ultimate Geography [JA] [Experimental]
+      file: src/note_models/templates/generated/JA/Ultimate_Geography_[JA]_[Experimental].yaml
+  - note_model_from_yaml_part:
+      part_id: Ultimate Geography [PT-BR] [Experimental]
+      file: src/note_models/templates/generated/PT-BR/Ultimate_Geography_[PT-BR]_[Experimental].yaml
   - note_model_from_yaml_part:
       part_id: Ultimate Geography [Experimental]
       file: src/note_models/templates/generated/EN/Ultimate_Geography_[EN]_[Experimental].yaml
@@ -87,10 +95,34 @@
           deck_description_html_file: src/headers/desc_ru.html
           crowdanki_uuid: b07e63d5-9dc5-542e-aaaa-a66fb99ae86a
           name: Ultimate Geography [RU]
+      - part_id: default header:de
+        file: src/headers/default.yaml
+        override:
+          deck_description_html_file: src/headers/desc_fork_de.html
+          crowdanki_uuid: 3adaa31c-3e76-5754-bc1f-10277753f93b
+          name: Ultimate Geography [DE]
+      - part_id: default header:fr
+        file: src/headers/default.yaml
+        override:
+          deck_description_html_file: src/headers/desc_fork_fr.html
+          crowdanki_uuid: 9529a54a-668a-5109-b344-30303d5f5f02
+          name: Ultimate Geography [FR]
+      - part_id: default header:ja
+        file: src/headers/default.yaml
+        override:
+          deck_description_html_file: src/headers/desc_fork_ja.html
+          crowdanki_uuid: 99d8262e-1366-56d2-9a2c-d008b8488ccb
+          name: Ultimate Geography [JA]
+      - part_id: default header:pt-br
+        file: src/headers/default.yaml
+        override:
+          deck_description_html_file: src/headers/desc_fork_pt-br.html
+          crowdanki_uuid: 23818d5d-648a-5853-b639-9fcc91a3a7cf
+          name: Ultimate Geography [PT-BR]
       - part_id: default header:es
         file: src/headers/default.yaml
         override:
-          deck_description_html_file: src/headers/desc_es.html
+          deck_description_html_file: src/headers/desc_fork_es.html
           crowdanki_uuid: cb4d32ee-12ed-9960-1841-28c09449ded0
           name: Ultimate Geography [ES]
       - part_id: default header:sv
@@ -184,6 +216,8 @@
             capital info:de     : Capital info
             capital hint:de     : Capital hint
             flag similarity:de  : Flag similarity
+            flag note:de       : Flag_Note
+            map note:de        : Map_Note
 
           personal_fields: [ ]
 
@@ -206,6 +240,8 @@
             capital info:es     : Capital info
             capital hint:es     : Capital hint
             flag similarity:es  : Flag similarity
+            flag note:es       : Flag_Note
+            map note:es        : Map_Note
 
           personal_fields: [ ]
 
@@ -229,6 +265,8 @@
             capital info:fr     : Capital info
             capital hint:fr     : Capital hint
             flag similarity:fr  : Flag similarity
+            flag note:fr       : Flag_Note
+            map note:fr        : Map_Note
 
           personal_fields: [ ]
 
@@ -515,6 +553,57 @@
           note_model: Ultimate Geography [HE] [Experimental]
 
 
+  - notes_from_csvs:
+      part_id: japanese
+
+      note_model_mappings:
+        - note_models:
+            - Ultimate Geography [JA] [Experimental]
+          columns_to_fields:
+            <<: *default_columns_to_fields
+
+            guid:ja             : guid
+            country:ja          : Country
+            country info:ja     : Country info
+            capital:ja          : Capital
+            capital info:ja     : Capital info
+            capital hint:ja     : Capital hint
+            flag similarity:ja  : Flag similarity
+            flag note:ja        : Flag_Note
+            map note:ja         : Map_Note
+
+          personal_fields: [ ]
+
+      file_mappings:
+        - <<: *file_mappings
+          note_model: Ultimate Geography [JA] [Experimental]
+
+  - notes_from_csvs:
+      part_id: brazilian portuguese
+
+      note_model_mappings:
+        - note_models:
+            - Ultimate Geography [PT-BR] [Experimental]
+          columns_to_fields:
+            <<: *default_columns_to_fields
+
+            guid:pt-br             : guid
+            country:pt-br          : Country
+            country info:pt-br     : Country info
+            capital:pt-br          : Capital
+            capital info:pt-br     : Capital info
+            capital hint:pt-br     : Capital hint
+            flag similarity:pt-br  : Flag similarity
+            flag note:pt-br        : Flag_Note
+            map note:pt-br         : Map_Note
+
+          personal_fields: [ ]
+
+      file_mappings:
+        - <<: *file_mappings
+          note_model: Ultimate Geography [PT-BR] [Experimental]
+
+
 - generate_crowd_anki:
     <<: &experimental_deck
       headers: default header
@@ -531,6 +620,7 @@
 - generate_crowd_anki:
     <<: *experimental_deck
     folder: build/Ultimate Geography [DE] [Experimental]
+    headers: default header:de
     note_models:
       parts:
         - part_id: Ultimate Geography [DE] [Experimental]
@@ -548,6 +638,7 @@
 - generate_crowd_anki:
     <<: *experimental_deck
     folder: build/Ultimate Geography [FR] [Experimental]
+    headers: default header:fr
     note_models:
       parts:
         - part_id: Ultimate Geography [FR] [Experimental]
@@ -653,3 +744,23 @@
         - part_id: Ultimate Geography [HE] [Experimental]
     notes:
       part_id: hebrew
+
+- generate_crowd_anki:
+    <<: *experimental_deck
+    headers: default header:ja
+    folder: build/Ultimate Geography [JA] [Experimental]
+    note_models:
+      parts:
+        - part_id: Ultimate Geography [JA] [Experimental]
+    notes:
+      part_id: japanese
+
+- generate_crowd_anki:
+    <<: *experimental_deck
+    headers: default header:pt-br
+    folder: build/Ultimate Geography [PT-BR] [Experimental]
+    note_models:
+      parts:
+        - part_id: Ultimate Geography [PT-BR] [Experimental]
+    notes:
+      part_id: brazilian portuguese

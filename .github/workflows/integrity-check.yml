@@ -1,12 +1,20 @@
 name: Integrity check
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
 
   build:
     name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -50,7 +58,7 @@ jobs:
       run: |
         uv run --locked python utils/generate_and_build.py 'recipes/source_to_anki_[experimental].yaml'
 
-    - name: Validate RU and EN source integrity and attribution
+    - name: Validate localized source integrity and attribution
       run: uv run --locked python utils/verify_sources.py
 
     - name: Export public APKG packages

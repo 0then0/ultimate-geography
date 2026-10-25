@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Build and update instructions
+    url: https://github.com/0then0/ultimate-geography#readme
+    about: Installation, source builds, language coexistence and licensing.
+  - name: Security reporting
+    url: https://github.com/0then0/ultimate-geography/security/policy
+    about: Read the private reporting process before disclosing a vulnerability.

@@ -18,7 +18,7 @@ async function main() {
       viewport: { width: 393, height: 900 },
       deviceScaleFactor: 1,
     });
-    for (const language of ['RU', 'EN']) {
+    for (const language of [...new Set(entries.map((entry) => entry.language))]) {
       const cards = entries.filter((x) => x.language === language);
       // One shared stylesheet, all Anki-rendered questions/answers. This checks
       // real content including the longest names, not synthetic placeholders.
@@ -113,11 +113,9 @@ async function main() {
           fs.mkdirSync(dir, { recursive: true });
           for (let type = 0; type < 4; type++) {
             for (const side of ['question', 'answer']) {
-              const country =
-                language === 'RU' ? 'Соединённые Штаты Америки' : 'United States of America';
-              const entry = cards.find(
-                (x) => x.type === type && x.side === side && x.country === country,
-              );
+              const entry = cards
+                .filter((x) => x.type === type && x.side === side)
+                .sort((a, b) => b.country.length - a.country.length)[0];
               await page.goto(pathToFileURL(entry.path).href);
               await page
                 .locator('body')
@@ -152,8 +150,8 @@ async function main() {
       JSON.stringify({
         browser: results.browser,
         scenarios: results.checks.length,
-        card_sides_per_scenario: 1964,
-        screenshots: 128,
+        card_sides_per_scenario: entries.length / new Set(entries.map((e) => e.language)).size,
+        screenshots: results.checks.length * 8,
       }),
     );
   } finally {

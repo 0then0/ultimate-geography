@@ -3,6 +3,8 @@ import csv
 import subprocess
 from pathlib import Path
 
+from locales import LANGUAGES
+
 
 def validate_subtokens(tokens):
     toks = sorted(tokens, key=len)
@@ -63,8 +65,8 @@ def generate_templates():
         replacements = [(name, row[name]) for name in fieldnames]
 
         for base_path in base_files:
-            enriched = language in ("RU", "EN")
-            override = csv_root / "templates" / "ru-en" / base_path.name
+            enriched = language in LANGUAGES
+            override = csv_root / "templates" / "shared" / base_path.name
             source = override if enriched and override.is_file() else base_path
             content = source.read_text(encoding="utf-8")
             if enriched and base_path.suffix == ".yaml":
@@ -80,7 +82,7 @@ def generate_templates():
                 output_style.write_text(
                     (csv_root / style).read_text(encoding="utf-8")
                     + "\n"
-                    + (csv_root / "style_ru_en.css").read_text(encoding="utf-8"),
+                    + (csv_root / "style_shared.css").read_text(encoding="utf-8"),
                     encoding="utf-8",
                 )
                 content = content.replace(f"src/note_models/{style}", output_style.as_posix())

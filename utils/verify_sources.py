@@ -1,10 +1,12 @@
-"""Offline checks for source integrity and Brain Brew RU/EN output."""
+"""Offline checks for source integrity and Brain Brew localized output."""
 
 import csv
 import hashlib
 import json
 import re
 from pathlib import Path
+
+from locales import LANGUAGES, field_column
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -28,14 +30,17 @@ def main():
         assert len(keys) == len(set(keys)), f"Duplicate country in {path}"
         assert set(keys) <= countries, path
     guids = read_csv(data / "guid.csv")
-    ru = {r["guid:ru"] for r in guids}
-    en = {r["guid"] for r in guids}
-    assert len(ru) == len(en) == 323 and "" not in ru | en and not ru & en
+    seen = set()
+    for language in LANGUAGES:
+        values = {r[field_column("guid", language)] for r in guids}
+        assert len(values) == 323 and "" not in values and not seen & values, language
+        seen.update(values)
     for filename, expected in [("flag_note.csv", 221), ("map_note.csv", 323)]:
         rows = read_csv(data / filename)
         key = filename[:-4].replace("_", " ")
         assert len(rows) == expected
-        assert all(r[key] and r[key + ":ru"] for r in rows)
+        for language in LANGUAGES:
+            assert all(r[field_column(key, language)] for r in rows), (filename, language)
     sources = {r["File"]: r for r in read_csv(ROOT / "sources.csv")}
     attribution = {r["File"]: r for r in read_csv(ROOT / "media-attribution.csv")}
     images = {
@@ -49,7 +54,7 @@ def main():
         assert attribution[name]["License"] == sources[name]["License"]
         if sources[name]["License"].startswith("CC BY"):
             assert attribution[name]["Author"] and attribution[name]["License URL"], name
-    for language in ("RU", "EN"):
+    for language in LANGUAGES:
         build = ROOT / "build" / f"Ultimate Geography [{language}]"
         deck = json.loads((build / "deck.json").read_text(encoding="utf-8"))
         model = deck["note_models"][0]
@@ -74,7 +79,7 @@ def main():
             "Map - Country",
         ]
         expected_cards = 0
-        guid_column = "guid:ru" if language == "RU" else "guid"
+        guid_column = field_column("guid", language)
         countries_by_guid = {r[guid_column]: r["country"] for r in guids}
         main_by_country = {r["country"]: r for r in main_rows}
         derivatives = {p.stem: {r["country"]: r for r in read_csv(p)} for p in data.glob("*.csv")}
@@ -95,10 +100,12 @@ def main():
                 "Flag": main_by_country[country]["flag"],
                 "Map": main_by_country[country]["map"],
             }
-            if language == "RU":
-                expected_fields["Country"] = derivatives["country"][country]["country:ru"]
+            if language != "EN":
+                expected_fields["Country"] = derivatives["country"][country][
+                    field_column("country", language)
+                ]
             for field, filename in field_files.items():
-                column = filename.replace("_", " ") + (":ru" if language == "RU" else "")
+                column = field_column(filename.replace("_", " "), language)
                 expected_fields[field] = derivatives[filename].get(country, {}).get(column, "")
             assert fields == expected_fields, f"Stale or incorrect build: {language}/{country}"
             assert fields["Country"] and fields["Map"] and fields["Map_Note"]
@@ -107,7 +114,7 @@ def main():
                 2 * bool(fields["Capital"]) + bool(fields["Flag"]) + bool(fields["Map"])
             )
             assert not {"UG::1", "UG::2"} & set(note["tags"])
-            if language == "EN":
+            if language != "RU":
                 assert not re.search("[А-Яа-яЁё]", " ".join(note["fields"])), fields["Country"]
             for name in re.findall(r'<img\b[^>]*src=["\']([^"\']+)', "\n".join(note["fields"])):
                 assert name in images and (build / "media" / name).is_file(), name
@@ -119,7 +126,7 @@ def main():
                 assert "<details" not in text.lower()
                 assert set(re.findall(r"{{[#/^]?([^{}]+)}}", text)) <= set(names)
     print(
-        "Source checks passed: 323 notes, 982 cards per language; GUIDs, translations, templates and all 550 image attributions valid."
+        "Source checks passed: 323 notes, 982 cards per language; GUIDs, translations, templates and all 550 image attributions valid across 7 languages."
     )
 
 

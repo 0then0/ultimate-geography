@@ -1,5 +1,83 @@
 # Validation record
 
+## 2026-10-25: seven localized variants
+
+Current source/build version: **2026.10.25**. Standard variants RU,
+EN, ES, DE, FR, JA and PT-BR use the shared templates and explanation fields.
+The following earlier sections retain the historical 2026-10-20 RU/EN results.
+
+### Source and identity checks
+
+All pre-existing GUID columns for all 323 notes were compared with commit
+`b07fcd2` and remained unchanged. EN/RU field values are unchanged. DE/ES/FR
+retain their existing note-model UUIDs and note GUIDs. JA and PT-BR have separate
+GUID columns, model IDs and deck UUIDs; PT-BR is distinct from legacy PT.
+The new regression test locks the five established language identity mappings.
+
+All seven source outputs passed complete CSV-to-field comparison, template-field
+validation, media SHA-256 and attribution checks. Each language contains
+**323 notes, 982 cards and 550 media**, with 221 flag notes and 323 map notes.
+No missing translations in required fields, empty cards or missing/unused media
+were found. Primary-source HTML links are retained in the translated fields.
+
+Both normal/extended and experimental Brain Brew recipes passed. APKG export,
+repeat import, independent rebuild updates and review-history preservation
+passed in disposable collections for every language. Installing all seven
+languages in forward and reverse order, then updating all of them, produced
+**2,261 notes and 6,874 cards** without overwriting other languages.
+
+Six regression tests passed on **CPython 3.10.22, 3.11.17, 3.12.15, 3.13.16,
+3.14.8 and 3.15.0** (36 successful test executions), including non-UTF-8 locale
+checks and Japanese/Brazilian exonym tests. Final PT-BR wording changes were
+rebuilt and the complete six-test suite and seven-language imports passed again
+on default Python 3.14.8. Original ZIP packaging also passed after export/QA.
+
+### Display checks
+
+Playwright 1.62.1 drove the installed **Google Chrome 156.0.8078.48**, headlessly,
+using `UG_CHROMIUM_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
+No browser or project dependency was added. Node.js was 24.22.1; Anki backend was
+26.9.3. The existing shared Node package directory was supplied through `NODE_PATH`.
+
+The full seven-language run covered **56 scenarios**, all question/answer sides
+at **360, 393, 412 and 1920 CSS px**, in both themes: **109,984 card-side layout
+evaluations** and **448 screenshots**. All checks passed: no horizontal overflow,
+failed or distorted images, hidden notes, or incorrect mobile stacking. PT-BR
+was checked separately again after selecting Brazilian names and editing its
+wording, covering all eight width/theme combinations and replacing its 64
+screenshots. Japanese uses explicit `lang="ja"`, native CJK font fallbacks and
+strict line breaking; PT-BR uses `lang="pt-BR"`.
+
+Questions and answers of all four types were visually inspected for each new
+language at 393 px in both themes, using long country names. Wide answer/map
+layouts for the five new languages were also inspected at 1920 px in both themes.
+Contact sheets and raw screenshots are under `build/qa/contact-sheets` and
+`build/qa/screenshots`. The final PT-BR rerun has a separate
+`build/qa/layout-verification-ptbr-final.json` report.
+
+### Tooling, documentation and limitations
+
+Biome formatting/checks, Ruff lint/format checks, `uv lock --check`, Git whitespace
+checks and parsing of the workflow/issue-form YAML passed. `.gitattributes` keeps
+source text at LF but disables text conversion for hash-bound `src/media` assets.
+The issue forms, PR template, conduct/security policies and changelog were
+validated locally before committing, pushing and preparing the 2026.10.25 release.
+No remote repository settings were changed. The published 2026.10.20 artifacts
+remain unchanged.
+
+New explanation translations were machine-assisted and then corrected for
+terminology, exonyms and Brazilian spelling. They have not been independently
+copy-edited by native-language reviewers. Builds use committed CSV values and
+never call a translation service.
+
+The original reference `/Users/user/Desktop/Страны, Столицы, Флаги.apkg` is no
+longer present. Its optional migration/audit could not be repeated: an initial
+`--reference` attempt failed with a file-not-found error. Public package tests
+were rerun successfully without it. Historical reference checks below remain
+separate from the current checks. Interactive Anki/AnkiDroid/AnkiMobile clients,
+physical devices, remote CI, and updates from old upstream DE/ES/FR APKGs were
+not exercised. Log files and test reports are kept in ignored `build/qa/`.
+
 RU/EN fork, checked locally on 2026-10-20. GitHub Actions itself was not run
 remotely. The checks below use disposable resources.
 

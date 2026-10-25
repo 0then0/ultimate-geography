@@ -291,3 +291,11 @@
 .mobile .ug-card > .ug-map img {
   max-height: 280px;
 }
+
+/* Native Japanese wrapping and locally installed CJK fonts. */
+.ug-card:lang(ja) {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP",
+    sans-serif;
+  line-break: strict;
+}

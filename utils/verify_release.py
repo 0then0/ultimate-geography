@@ -14,6 +14,7 @@ from anki.collection import Collection
 from anki.import_export_pb2 import ImportAnkiPackageOptions, ImportAnkiPackageRequest
 from anki.scheduler_pb2 import CardAnswer
 from export_apkg import RELEASE, ROOT, export, media_names
+from locales import LANGUAGES
 
 QA = ROOT / "build" / "qa"
 PACKAGES = ROOT / "build" / "releases"
@@ -81,7 +82,7 @@ def validate_sources():
         sources = {r["File"]: r for r in csv.DictReader(f)}
     with (ROOT / "media-attribution.csv").open(newline="", encoding="utf-8") as f:
         attribution = {r["File"]: r for r in csv.DictReader(f)}
-    for lang in ("RU", "EN"):
+    for lang in LANGUAGES:
         j = json.loads(
             (ROOT / "build" / f"Ultimate Geography [{lang}]" / "deck.json").read_text(
                 encoding="utf-8"
@@ -139,7 +140,7 @@ def verify(reference=None):
     validate_sources()
     entries = []
     results = {"anki_backend": importlib.metadata.version("anki"), "languages": {}}
-    for language in ("RU", "EN"):
+    for language in LANGUAGES:
         package = PACKAGES / f"Ultimate_Geography_{RELEASE}_{language}.apkg"
         with tempfile.TemporaryDirectory(prefix="ug-verify-") as tmp:
             c = Collection(str(Path(tmp) / "collection.anki2"))
@@ -221,6 +222,23 @@ def verify(reference=None):
             finally:
                 c.close()
     results["bilingual_both_orders"] = {"notes": 646, "cards": 1964}
+    # Distinct GUIDs and model IDs must isolate every supported language.
+    for order in [LANGUAGES, tuple(reversed(LANGUAGES))]:
+        with tempfile.TemporaryDirectory(prefix="ug-multilingual-") as tmp:
+            c = Collection(str(Path(tmp) / "collection.anki2"))
+            try:
+                for language in order + order:
+                    import_package(c, PACKAGES / f"Ultimate_Geography_{RELEASE}_{language}.apkg")
+                assert c.note_count() == 323 * len(LANGUAGES)
+                assert c.card_count() == 982 * len(LANGUAGES)
+                for language in LANGUAGES:
+                    verify_content(c, language)
+            finally:
+                c.close()
+    results["multilingual_both_orders"] = {
+        "notes": 323 * len(LANGUAGES),
+        "cards": 982 * len(LANGUAGES),
+    }
     if reference:
         with tempfile.TemporaryDirectory(prefix="ug-migration-") as tmp:
             c = Collection(str(Path(tmp) / "collection.anki2"))

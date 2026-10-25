@@ -1,8 +1,8 @@
 <p align="left"><img src="doc/icon.svg" alt="Study cards with a globe, capital marker and flag" width="128" height="128"></p>
 
-# Ultimate Geography · RU / EN
+# Ultimate Geography · Multilingual
 
-![Languages: RU and EN](https://img.shields.io/badge/languages-RU%20%7C%20EN-23465a)
+![7 languages](https://img.shields.io/badge/languages-7-23465a)
 ![323 notes per language](https://img.shields.io/badge/notes-323%20per%20language-57939a)
 ![982 cards per language](https://img.shields.io/badge/cards-982%20per%20language-57939a)
 [![Content: Unlicense](https://img.shields.io/badge/content-Unlicense-blue)](LICENSE.md)
@@ -10,11 +10,12 @@
 
 [Русская документация](README.ru.md)
 
-An editable Russian and English geography deck for Anki, based on
+An editable geography deck for Anki in **Russian (RU), English (EN), Spanish (ES),
+German (DE), French (FR), Japanese (JA) and Brazilian Portuguese (PT-BR)**, based on
 [anki-geo/ultimate-geography](https://github.com/anki-geo/ultimate-geography).
-This fork incorporates a corrected Russian reference APKG supplied by the user,
-translates its explanations into English, and retains the upstream CSV/Brain
-Brew workflow. It is an independent fork, not an official upstream release.
+This fork incorporates a corrected Russian reference APKG,
+localizes its explanations, and retains the upstream CSV/Brain Brew workflow.
+It is an independent fork, not an official upstream release.
 
 Each language has **323 notes and 982 cards**, using the original four directions:
 country → capital, capital → country, flag → country, and map → geographical
@@ -27,18 +28,23 @@ responsive layout. Extra information is always visible on the answer. Standalone
 map panels have a bounded width. Personal priority decks, grading rules and study
 settings from the reference are excluded. See [the migration audit](doc/reference-audit.json)
 and [dated primary sources](doc/content-sources.csv) for deliberate differences.
-English uses upstream names and preserves its useful alternative spellings.
+English, Spanish, German and French retain their established upstream names and
+note GUIDs. Japanese and Brazilian Portuguese have separate identities; upstream
+European Portuguese (`PT`) remains available as a separate legacy variant.
+[Release 2026.10.25](https://github.com/0then0/ultimate-geography/releases/tag/v2026.10.25)
+contains all seven languages; the earlier 2026.10.20 release contains RU/EN only.
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Install
 
-Download the **RU** or **EN release ZIP**, extract it, and import its `.apkg` via
+Download the release ZIP for your language when available, extract it, and import its `.apkg` via
 Anki's **File → Import**. Images are included; CrowdAnki is not needed for APKG.
 Keep the ZIP's `LICENSE.md`, `sources.csv` and `media-attribution.csv` when sharing
 or repackaging it. Share the ZIP as the complete distribution.
 
-The two APKGs can be imported into the same collection in either order. They use
-the existing, disjoint per-language GUIDs and separate note types and decks named
-`Ultimate Geography [RU]` and `Ultimate Geography [EN]`.
+All seven APKGs can coexist in one collection. Each language has disjoint note
+GUIDs, a separate note type and its own deck, such as `Ultimate Geography [JA]`
+or `Ultimate Geography [PT-BR]`. Use the same language when updating.
 
 ## Update an existing deck
 
@@ -87,12 +93,12 @@ on every supported Python version. See [validation results](doc/VALIDATION.md)
 for the exact locally tested interpreters and platforms.
 
 The first build generates all upstream standard and extended CrowdAnki variants;
-the second preserves the experimental build. Only standard RU/EN variants are
-packaged for this fork's public APKG releases. Edit CSVs in `src/data`, shared
-RU/EN templates in `src/note_models/templates/ru-en`, labels in
-`src/note_models/translations.csv`, and styling in `src/note_models/style_ru_en.css`.
-Generated templates and `build/` are ignored by Git. Other languages retain their
-original templates and styling. New fields are appended after the eight upstream
+the second preserves the experimental build. Only standard variants of the seven
+supported languages are packaged for this fork's public APKG releases. Edit CSVs in `src/data`, shared
+templates in `src/note_models/templates/shared`, labels in
+`src/note_models/translations.csv`, and styling in `src/note_models/style_shared.css`.
+Generated templates and `build/` are ignored by Git. The remaining legacy upstream
+languages retain their original templates and styling. New fields are appended after the eight upstream
 fields.
 
 The optional `export` dependency group pins **Anki backend 26.9.3** in the same
@@ -101,6 +107,8 @@ or `PYTHONPATH` is needed:
 
 ```sh
 uv run --locked --group export python utils/export_apkg.py
+# Or export one language after building:
+uv run --locked --group export python utils/export_apkg.py --language JA
 uv run --locked --group export python utils/verify_release.py
 uv run --locked --group export python utils/audit_reference.py '/path/to/reference.apkg'
 ```
@@ -110,10 +118,11 @@ For the reference upgrade/history regression test, pass
 package tests without the private reference file. `uv sync --locked --group export`
 installs the build, lint and export dependencies together in advance.
 
-Outputs: `build/releases/Ultimate_Geography_2026.10.20_{RU,EN}.apkg`, corresponding
+Outputs: `build/releases/Ultimate_Geography_2026.10.25_<LANG>.apkg` for
+`RU`, `EN`, `ES`, `DE`, `FR`, `JA` and `PT-BR`, corresponding
 ZIPs with licenses and attribution, and JSON manifests with package and semantic
 content hashes. `SOURCE_DATE_EPOCH` sets the source modification date for a new
-release (default: 2026-10-20 UTC); advance it when publishing changed content.
+release (default: 2026-10-25 UTC); advance it when publishing changed content.
 Anki assigns fresh internal database IDs and ZIP metadata during export, so APKG
 bytes may differ between builds. GUIDs, fields, templates and semantic hashes are
 reproducible. The reference APKG is needed only for the optional comparison audit,
@@ -163,7 +172,7 @@ screenshots to `build/qa/`; it does not download packages or browsers.
 
 ## Validation and compatibility
 
-After building the decks and exporting the RU/EN APKGs, run the regression suite:
+After building the decks and exporting all seven APKGs, run the regression suite:
 
 ```sh
 uv run --locked --group export python -m unittest discover -s utils -p 'test_*.py' -v
@@ -173,6 +182,7 @@ The standard-library tests check ZIP packaging alongside `build/qa` and
 `build/releases`, UTF-8 input/output under a non-UTF-8 locale, rejection of an
 unexpected reference package, and public import/update/history preservation.
 They use temporary archives and Anki collections and require no private reference.
+The import checks also install all seven languages together in both orders.
 CI runs the suite on every Python version in the compatibility matrix.
 
 See [the validation record](doc/VALIDATION.md) for exact versions, commands, import
@@ -191,5 +201,13 @@ with uncertain revision provenance is substituted for an upstream asset.
 The label `kaiu` in the supplied model is not evidence of separate authorship or
 an additional third-party license. No Apache-2.0 claim is made for this fork.
 
-[CONTRIBUTING.md](CONTRIBUTING.md) describes the upstream data model and recipes.
+[CONTRIBUTING.md](CONTRIBUTING.md) describes the data model, translation workflow
+and validation commands. [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) covers participation;
+[SECURITY.md](SECURITY.md) explains vulnerability reporting. Use the issue forms
+for reproducible bugs or sourced content corrections.
+
+Project text files use UTF-8/LF, enforced through `.editorconfig` and
+`.gitattributes`; binary media retain their exact bytes. Biome formats supported
+JavaScript/CSS/JSON files; Ruff formats Python. CSV, YAML, Markdown and Anki HTML
+are intentionally outside Biome's supported/safe formatting scope.
 Use the distribution-specific commands and counts above for this fork.

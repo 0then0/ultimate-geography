@@ -1,13 +1,21 @@
 <p align="left"><img src="doc/icon.svg" alt="Карточки с глобусом, отметкой столицы и флагом" width="128" height="128"></p>
 
-# Ultimate Geography · RU / EN
+# Ultimate Geography · 7 языков
 
 [English documentation](README.md)
 
 Независимый форк [anki-geo/ultimate-geography](https://github.com/anki-geo/ultimate-geography)
-с исправлениями из предоставленной русскоязычной колоды, английским переводом
+с исправлениями из предоставленной русскоязычной колоды, переводами
 пояснений и адаптивным оформлением. Источником разработки являются CSV, HTML и CSS
 в репозитории. Исходный `.apkg` нужен только для необязательной проверки миграции.
+
+Поддерживаются русский (`RU`), английский (`EN`), испанский (`ES`), немецкий
+(`DE`), французский (`FR`), японский (`JA`) и бразильский португальский (`PT-BR`).
+Исходные GUID для RU/EN/ES/DE/FR сохранены; JA и PT-BR имеют отдельные идентификаторы.
+Прежний европейский португальский `PT` остаётся отдельным вариантом upstream.
+[Релиз 2026.10.25](https://github.com/0then0/ultimate-geography/releases/tag/v2026.10.25)
+содержит все семь языков; прежний релиз 2026.10.20 содержит только RU/EN.
+Изменения перечислены в [CHANGELOG.md](CHANGELOG.md).
 
 В каждом языке **323 заметки и 982 карточки** четырёх исходных типов:
 страна → столица, столица → страна, флаг → страна, карта → географический объект.
@@ -76,10 +84,10 @@ macOS эти два пакета под 3.15 собираются из исхо�
 проверенные интерпретаторы и платформы указаны в [отчёте](doc/VALIDATION.md).
 
 Сохраняются стандартные, расширенные и экспериментальные сборки upstream.
-Публичные APKG этого форка выпускаются только для стандартных RU и EN.
-Правьте `src/data/*.csv`, общие шаблоны в `src/note_models/templates/ru-en`, подписи
-в `src/note_models/translations.csv` и `src/note_models/style_ru_en.css`.
-Поля `Flag_Note` и `Map_Note` добавлены после восьми исходных полей. Другие языки
+APKG этого форка собираются для стандартных вариантов всех семи языков.
+Правьте `src/data/*.csv`, общие шаблоны в `src/note_models/templates/shared`, подписи
+в `src/note_models/translations.csv` и `src/note_models/style_shared.css`.
+Поля `Flag_Note` и `Map_Note` добавлены после восьми исходных полей. Остальные прежние языки upstream
 продолжают использовать первоначальные шаблоны и стили.
 
 Группа зависимостей `export` содержит **Anki backend 26.9.3**. Он работает в том же
@@ -88,6 +96,8 @@ macOS эти два пакета под 3.15 собираются из исхо�
 
 ```sh
 uv run --locked --group export python utils/export_apkg.py
+# Экспорт одного языка после сборки:
+uv run --locked --group export python utils/export_apkg.py --language JA
 uv run --locked --group export python utils/verify_release.py
 uv run --locked --group export python utils/audit_reference.py '/путь/к/исправленной.apkg'
 ```
@@ -97,10 +107,10 @@ uv run --locked --group export python utils/audit_reference.py '/путь/к/и�
 публичные сборки без личного файла. Команда `uv sync --locked --group export`
 заранее устанавливает зависимости сборки, линтера и экспорта вместе.
 
-Результат: `build/releases/Ultimate_Geography_2026.10.20_RU.apkg` и
-`Ultimate_Geography_2026.10.20_EN.apkg`, соответствующие ZIP с лицензиями и атрибуцией,
+Результат: `build/releases/Ultimate_Geography_2026.10.25_<LANG>.apkg` для
+`RU`, `EN`, `ES`, `DE`, `FR`, `JA`, `PT-BR`; соответствующие ZIP с лицензиями и атрибуцией,
 JSON с хешами пакетов и содержимого. Для новой редакции задавайте более поздний
-`SOURCE_DATE_EPOCH`; по умолчанию используется 2026-10-20 UTC. Внутренние ID базы
+`SOURCE_DATE_EPOCH`; по умолчанию используется 2026-10-25 UTC. Внутренние ID базы
 и метаданные ZIP назначает Anki, поэтому побайтовое совпадение APKG не гарантируется.
 Содержимое и GUID воспроизводимы. Сборки создаются в одноразовых коллекциях без
 истории, расписания автора и личных настроек. `build/` исключён из Git.
@@ -143,7 +153,7 @@ Chromium. Playwright не добавлен в зависимости проек�
 
 ## Проверки и лицензии
 
-После сборки колод и экспорта RU/EN APKG запустите регрессионные тесты:
+После сборки колод и экспорта всех семи APKG запустите регрессионные тесты:
 
 ```sh
 uv run --locked --group export python -m unittest discover -s utils -p 'test_*.py' -v
@@ -170,3 +180,12 @@ CI запускает тесты на всех версиях Python из мат
 
 `CONTRIBUTING.md` сохраняет руководство по модели данных и рецептам upstream.
 Команды и количества для этого форка приведены выше.
+
+Правила участия: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Сообщения об уязвимостях:
+[SECURITY.md](SECURITY.md). Формы GitHub Issues разделяют ошибки сборки/отображения
+и содержательные исправления с источниками. [CONTRIBUTING.md](CONTRIBUTING.md)
+описывает структуру переводов и проверки.
+
+Исходники используют UTF-8/LF; `.gitattributes` сохраняет бинарные изображения без
+преобразований. Biome форматирует JavaScript/CSS/JSON, Ruff форматирует Python.
+CSV, YAML, Markdown и HTML-шаблоны Anki исключены из обработки Biome.

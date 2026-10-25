@@ -1,22 +1,28 @@
-<div dir="__TEXT_DIRECTION__">
+<div lang="__LANGUAGE_TAG__" dir="__TEXT_DIRECTION__">
 {{#Capital}}
 <div class="ug-card">
-  <div class="ug-type">__COUNTRY_CAPITAL_LABEL__</div>
-  <div class="ug-main">{{Country}}</div>
+  <div class="ug-type">__CAPITAL_COUNTRY_LABEL__</div>
+  <div class="ug-main">{{Capital}}</div>
+  {{#Capital hint}}
+  <div class="ug-note">{{Capital hint}}</div>
+  {{/Capital hint}}
   <div class="ug-separator"></div>
-  <div class="ug-answer ug-muted">__ASK_CAPITAL__</div>
+  <div class="ug-answer ug-muted">__ASK_COUNTRY__</div>
 </div>
 {{/Capital}}
 </div>
 
 --
 
-<div dir="__TEXT_DIRECTION__">
+<div lang="__LANGUAGE_TAG__" dir="__TEXT_DIRECTION__">
 <div class="ug-card">
-  <div class="ug-type">__COUNTRY_CAPITAL_LABEL__</div>
-  <div class="ug-main">{{Country}}</div>
+  <div class="ug-type">__CAPITAL_COUNTRY_LABEL__</div>
+  <div class="ug-main">{{Capital}}</div>
+  {{#Capital hint}}
+  <div class="ug-note">{{Capital hint}}</div>
+  {{/Capital hint}}
   <div class="ug-separator" id="answer"></div>
-  <div class="ug-answer">{{Capital}}</div>
+  <div class="ug-answer">{{Country}}</div>
   {{#Capital info}}
   <div class="ug-info">{{Capital info}}</div>
   {{/Capital info}}
