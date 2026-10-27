@@ -17,3 +17,9 @@
 # These third-party assets are hash-bound in media-attribution.csv.
 # Preserve SVG and experimental JS/CSS bytes as well as raster images.
 src/media/** -text
+
+# Keep original whitespace in these hash-bound third-party flag assets.
+src/media/flags/ug-flag-british_virgin_islands.svg whitespace=-blank-at-eol
+src/media/flags/ug-flag-gibraltar.svg whitespace=-blank-at-eol
+src/media/flags/ug-flag-guernsey.svg whitespace=-blank-at-eol
+src/media/flags/ug-flag-isle_of_man.svg whitespace=-blank-at-eol
