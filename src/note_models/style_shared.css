@@ -84,6 +84,16 @@
   font-size: 17px;
   line-height: 1.5;
 }
+.ug-pronunciation {
+  margin: 8px 0 14px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ug-text);
+  overflow-wrap: anywhere;
+}
+.ug-pronunciation-label {
+  color: var(--ug-muted);
+}
 .ug-separator {
   margin: 18px 0;
   border: 0;
@@ -96,7 +106,7 @@
 }
 .ug-media-grid {
   display: grid;
-  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 420px) minmax(0, 796px);
   gap: 20px;
   align-items: start;
   margin-top: 18px;
@@ -113,11 +123,24 @@
   border-radius: 12px;
   background: var(--ug-subpanel);
 }
+.ug-map-block {
+  width: min-content;
+  max-width: 100%;
+}
+.ug-map-block .ug-map {
+  width: max-content;
+  max-width: 100%;
+}
 .ug-details > .ug-media-block {
   margin-top: 18px;
 }
 .ug-details > .ug-map-block {
-  max-width: 796px;
+  width: min-content;
+  max-width: 100%;
+}
+.ug-map-block .ug-map {
+  width: max-content;
+  max-width: 100%;
 }
 .ug-details > .ug-flag-block {
   max-width: 420px;
@@ -139,8 +162,8 @@
   background: #ffffff;
 }
 .ug-map img {
-  width: 100% !important;
-  max-width: 760px !important;
+  width: auto !important;
+  max-width: min(100%, 760px) !important;
   max-height: 430px;
   object-position: left top;
 }

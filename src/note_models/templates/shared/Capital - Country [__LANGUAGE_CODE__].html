@@ -3,6 +3,9 @@
 <div class="ug-card">
   <div class="ug-type">__CAPITAL_COUNTRY_LABEL__</div>
   <div class="ug-main">{{Capital}}</div>
+  {{#Capital_Pronunciation}}
+  <div class="ug-pronunciation"><span class="ug-pronunciation-label">__PRONUNCIATION__:</span> {{Capital_Pronunciation}}</div>
+  {{/Capital_Pronunciation}}
   {{#Capital hint}}
   <div class="ug-note">{{Capital hint}}</div>
   {{/Capital hint}}
@@ -18,11 +21,17 @@
 <div class="ug-card">
   <div class="ug-type">__CAPITAL_COUNTRY_LABEL__</div>
   <div class="ug-main">{{Capital}}</div>
+  {{#Capital_Pronunciation}}
+  <div class="ug-pronunciation"><span class="ug-pronunciation-label">__PRONUNCIATION__:</span> {{Capital_Pronunciation}}</div>
+  {{/Capital_Pronunciation}}
   {{#Capital hint}}
   <div class="ug-note">{{Capital hint}}</div>
   {{/Capital hint}}
   <div class="ug-separator" id="answer"></div>
   <div class="ug-answer">{{Country}}</div>
+  {{#Country_Pronunciation}}
+  <div class="ug-pronunciation"><span class="ug-pronunciation-label">__PRONUNCIATION__:</span> {{Country_Pronunciation}}</div>
+  {{/Country_Pronunciation}}
   {{#Capital info}}
   <div class="ug-info">{{Capital info}}</div>
   {{/Capital info}}

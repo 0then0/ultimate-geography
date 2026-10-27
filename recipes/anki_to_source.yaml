@@ -39,6 +39,8 @@
          flag similarity: Flag similarity
          flag note: Flag_Note
          map note: Map_Note
+         country pronunciation: Country_Pronunciation
+         capital pronunciation: Capital_Pronunciation
          map: map
          tags: tags
 
@@ -58,3 +60,5 @@
           - file: src/data/flag_similarity.csv
           - file: src/data/flag_note.csv
           - file: src/data/map_note.csv
+          - file: src/data/country_pronunciation.csv
+          - file: src/data/capital_pronunciation.csv

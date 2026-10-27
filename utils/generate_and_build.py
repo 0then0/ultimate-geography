@@ -73,7 +73,7 @@ def generate_templates():
                 # Append fields to preserve the ordinals of the upstream fields.
                 content = content.replace(
                     "templates:\n",
-                    "  - name: Flag_Note\n    font: Arial\n  - name: Map_Note\n    font: Arial\ntemplates:\n",
+                    "  - name: Flag_Note\n    font: Arial\n  - name: Map_Note\n    font: Arial\n  - name: Country_Pronunciation\n    font: Arial\n  - name: Capital_Pronunciation\n    font: Arial\ntemplates:\n",
                 )
                 style = (
                     "style_[Experimental].css" if "Experimental" in base_path.name else "style.css"

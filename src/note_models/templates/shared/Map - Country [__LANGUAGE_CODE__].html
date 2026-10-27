@@ -17,6 +17,9 @@
   <div class="ug-image ug-map">{{Map}}</div>
   <div class="ug-separator" id="answer"></div>
   <div class="ug-answer">{{Country}}</div>
+  {{#Country_Pronunciation}}
+  <div class="ug-pronunciation"><span class="ug-pronunciation-label">__PRONUNCIATION__:</span> {{Country_Pronunciation}}</div>
+  {{/Country_Pronunciation}}
   {{#Map_Note}}
   <div class="ug-note">{{Map_Note}}</div>
   {{/Map_Note}}
@@ -26,7 +29,9 @@
     <div class="ug-info">{{Country info}}</div>
     {{/Country info}}{{#Capital}}
     <div class="ug-info">__CAPITAL_PREFIX__{{Capital}}</div>
-    {{/Capital}}{{#Capital info}}
+    {{/Capital}}{{#Capital_Pronunciation}}
+    <div class="ug-pronunciation"><span class="ug-pronunciation-label">__PRONUNCIATION__:</span> {{Capital_Pronunciation}}</div>
+    {{/Capital_Pronunciation}}{{#Capital info}}
     <div class="ug-info">{{Capital info}}</div>
     {{/Capital info}}{{#Flag}}
     <div class="ug-media-block ug-flag-block">

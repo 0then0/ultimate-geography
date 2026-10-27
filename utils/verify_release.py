@@ -9,12 +9,13 @@ import json
 import re
 import tempfile
 from pathlib import Path
+from zipfile import ZipFile
 
 from anki.collection import Collection
 from anki.import_export_pb2 import ImportAnkiPackageOptions, ImportAnkiPackageRequest
 from anki.scheduler_pb2 import CardAnswer
 from export_apkg import RELEASE, ROOT, export, media_names
-from locales import LANGUAGES
+from locales import CARD_COUNT, LANGUAGES, MEDIA_COUNT, field_column
 
 QA = ROOT / "build" / "qa"
 PACKAGES = ROOT / "build" / "releases"
@@ -89,7 +90,7 @@ def validate_sources():
             )
         )
         media = set().union(*(media_names(n["fields"]) for n in j["notes"]))
-        assert len(media) == 550
+        assert len(media) == MEDIA_COUNT
         for name in media:
             assert name in sources and name in attribution, name
             row = attribution[name]
@@ -135,18 +136,83 @@ def render_cards(c, language):
     return entries
 
 
-def verify(reference=None):
+def verify_previous_release(directory):
+    """Update the actual prior public packages after a real review event."""
+    results = {}
+    with (ROOT / "doc/flag-corrections.csv").open(encoding="utf-8", newline="") as f:
+        corrections = {r["country"]: set(r["fields"].split("|")) for r in csv.DictReader(f)}
+    with (ROOT / "src/data/guid.csv").open(encoding="utf-8", newline="") as f:
+        guids = list(csv.DictReader(f))
+    for language in LANGUAGES:
+        archive = directory / f"Ultimate_Geography_2026.10.25_{language}.zip"
+        with tempfile.TemporaryDirectory(prefix="ug-previous-release-") as tmp:
+            previous = Path(tmp) / "previous.apkg"
+            with ZipFile(archive) as z:
+                previous.write_bytes(z.read(archive.with_suffix(".apkg").name))
+            c = Collection(str(Path(tmp) / "collection.anki2"))
+            try:
+                import_package(c, previous)
+                original = {c.get_note(n).guid: c.get_note(n).fields for n in c.find_notes("")}
+                c.decks.select(c.decks.id(f"Ultimate Geography [{language}]"))
+                queued = c.sched.get_queued_cards().cards[0]
+                card = c.get_card(queued.card.id)
+                card.start_timer()
+                c.sched.answer_card(
+                    c.sched.build_answer(card=card, states=queued.states, rating=CardAnswer.GOOD)
+                )
+                before = snapshot(c)
+                countries = {r[field_column("guid", language)]: r["country"] for r in guids}
+                added_flags = {
+                    guid
+                    for guid, country in countries.items()
+                    if "Flag" in corrections.get(country, set())
+                }
+                old_ids = {r[0] for r in before["cards"]}
+                updated = None
+                package = PACKAGES / f"Ultimate_Geography_{RELEASE}_{language}.apkg"
+                for _ in range(2):
+                    import_package(c, package)
+                    after = snapshot(c)
+                    assert [r for r in after["cards"] if r[0] in old_ids] == before["cards"], (
+                        language
+                    )
+                    assert after["revlog"] == before["revlog"], language
+                    added = [r for r in after["cards"] if r[0] not in old_ids]
+                    assert len(added) == len(added_flags) == 14, language
+                    assert {c.get_note(r[1]).guid for r in added} == added_flags, language
+                    assert all(r[2] == 2 and r[3] == 0 and r[8] == 0 for r in added), language
+                    if updated is not None:
+                        assert after == updated, language
+                    updated = after
+                    assert c.note_count() == 323 and c.card_count() == CARD_COUNT
+                    verify_content(c, language)
+                    for nid in c.find_notes(""):
+                        note = c.get_note(nid)
+                        allowed = corrections.get(countries[note.guid], set())
+                        for field, old, new in zip(note.keys(), original[note.guid], note.fields):
+                            assert old == new or field in allowed, (language, note.guid, field)
+                results[language] = {"notes": 323, "cards": CARD_COUNT, "history_preserved": True}
+            finally:
+                c.close()
+    return results
+
+
+def verify(reference=None, previous_release=None):
     QA.mkdir(parents=True, exist_ok=True)
     validate_sources()
     entries = []
     results = {"anki_backend": importlib.metadata.version("anki"), "languages": {}}
+    if previous_release:
+        results["previous_release_updates"] = verify_previous_release(previous_release)
     for language in LANGUAGES:
         package = PACKAGES / f"Ultimate_Geography_{RELEASE}_{language}.apkg"
         with tempfile.TemporaryDirectory(prefix="ug-verify-") as tmp:
             c = Collection(str(Path(tmp) / "collection.anki2"))
             try:
                 r = import_package(c, package)
-                assert len(r.log.new) == 323 and c.note_count() == 323 and c.card_count() == 982
+                assert (
+                    len(r.log.new) == 323 and c.note_count() == 323 and c.card_count() == CARD_COUNT
+                )
                 assert not c.get_empty_cards().notes
                 report = c.media.check()
                 assert not report.missing and not report.unused, report
@@ -160,7 +226,7 @@ def verify(reference=None):
                 entries.extend(render_cards(c, language))
                 before = snapshot(c)
                 import_package(c, package)
-                assert c.note_count() == 323 and c.card_count() == 982
+                assert c.note_count() == 323 and c.card_count() == CARD_COUNT
                 assert snapshot(c) == before
                 verify_content(c, language)
                 # A newly built package has different internal database IDs.
@@ -195,12 +261,12 @@ def verify(reference=None):
                 studied = snapshot(c)
                 import_package(c, rebuilt_dir / package.name)
                 assert snapshot(c) == studied
-                assert c.note_count() == 323 and c.card_count() == 982
+                assert c.note_count() == 323 and c.card_count() == CARD_COUNT
                 verify_content(c, language)
                 results["languages"][language] = {
                     "notes": 323,
-                    "cards": 982,
-                    "media": 550,
+                    "cards": CARD_COUNT,
+                    "media": MEDIA_COUNT,
                     "empty_cards": 0,
                     "missing_media": 0,
                     "review_events": 0,
@@ -216,12 +282,12 @@ def verify(reference=None):
             try:
                 for lang in order + order:
                     import_package(c, PACKAGES / f"Ultimate_Geography_{RELEASE}_{lang}.apkg")
-                assert c.note_count() == 646 and c.card_count() == 1964
+                assert c.note_count() == 646 and c.card_count() == (2 * CARD_COUNT)
                 verify_content(c, "RU")
                 verify_content(c, "EN")
             finally:
                 c.close()
-    results["bilingual_both_orders"] = {"notes": 646, "cards": 1964}
+    results["bilingual_both_orders"] = {"notes": 646, "cards": (2 * CARD_COUNT)}
     # Distinct GUIDs and model IDs must isolate every supported language.
     for order in [LANGUAGES, tuple(reversed(LANGUAGES))]:
         with tempfile.TemporaryDirectory(prefix="ug-multilingual-") as tmp:
@@ -230,14 +296,14 @@ def verify(reference=None):
                 for language in order + order:
                     import_package(c, PACKAGES / f"Ultimate_Geography_{RELEASE}_{language}.apkg")
                 assert c.note_count() == 323 * len(LANGUAGES)
-                assert c.card_count() == 982 * len(LANGUAGES)
+                assert c.card_count() == CARD_COUNT * len(LANGUAGES)
                 for language in LANGUAGES:
                     verify_content(c, language)
             finally:
                 c.close()
     results["multilingual_both_orders"] = {
         "notes": 323 * len(LANGUAGES),
-        "cards": 982 * len(LANGUAGES),
+        "cards": CARD_COUNT * len(LANGUAGES),
     }
     if reference:
         with tempfile.TemporaryDirectory(prefix="ug-migration-") as tmp:
@@ -260,7 +326,7 @@ def verify(reference=None):
                 before = snapshot(c)
                 assert before["revlog"]
                 import_package(c, PACKAGES / f"Ultimate_Geography_{RELEASE}_RU.apkg")
-                assert c.note_count() == 323 and c.card_count() == 982
+                assert c.note_count() == 323 and c.card_count() == CARD_COUNT
                 after = snapshot(c)
                 old_ids = {row[0] for row in before["cards"]}
                 assert [row for row in after["cards"] if row[0] in old_ids] == before["cards"]
@@ -268,7 +334,7 @@ def verify(reference=None):
                 verify_content(c, "RU")
                 results["reference_upgrade"] = {
                     "existing_cards_preserved": 978,
-                    "new_cards": 4,
+                    "new_cards": CARD_COUNT - 978,
                     "review_events_preserved": len(before["revlog"]),
                 }
             finally:
@@ -285,4 +351,6 @@ def verify(reference=None):
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--reference", type=Path)
-    verify(p.parse_args().reference)
+    p.add_argument("--previous-release", type=Path, help="Directory with the 2026.10.25 ZIPs")
+    args = p.parse_args()
+    verify(args.reference, args.previous_release)

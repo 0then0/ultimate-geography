@@ -1,5 +1,125 @@
 # Validation record
 
+## 2026-10-27: territorial flags and description corrections
+
+This later local revision supersedes the earlier 982-card/550-media counts below.
+All seven public decks now contain **323 notes, 996 cards and 564 media**:
+219 country-to-capital, 219 capital-to-country, 235 flag-to-country and
+323 map cards. The 14 added flags are Bermuda, British Virgin Islands, Turks and
+Caicos Islands, Cayman Islands, Anguilla, Gibraltar, Guernsey, Isle of Man,
+Jersey, American Samoa, Northern Mariana Islands, Sint Maarten, Falkland Islands
+and Martinique. They reuse the existing notes/GUIDs and add only flag cards.
+This is not an expansion into city flags or a claim to cover every regional flag.
+
+Northern Ireland now explains its Union Flag status and distinguishes Belfast's
+city flag. The same flag field remains empty to avoid an ambiguous UK duplicate.
+Saint Lucia's layering is corrected in all seven languages, Vatican keys in
+JA/PT-BR, and the Kanak/FLNKS caption explains its status for New Caledonia.
+Decisions, sources and allowed migration field changes are recorded in
+`flag-corrections.csv`. Pronunciation content and all note GUIDs are unchanged.
+
+All 14 downloaded original SVGs match Wikimedia imageinfo SHA1 checksums. Source
+pages, actual licenses, credited creators/collections and local SHA256 hashes
+are recorded in `sources.csv` and `media-attribution.csv`. Jersey's source is the
+public-domain Xrmap collection. The Northern Mariana Islands file is from the
+CC0 Open Clip Art Library collection; an individual artist is not claimed.
+All **241 flag SVG files** (including six masked/full pairs) parse and render,
+with no missing files, scripts or external SVG references found in the audit.
+
+Both Brain Brew recipes, source parity, all seven APKG exports and **11 tests**
+passed using the same CPython 3.14.8 / Anki backend 26.9.3 environment. Migration
+from each actual 2026.10.25 release was tested after a real scheduler review:
+all old card rows and review events survive, exactly 14 new unreviewed flag cards
+appear with the expected existing note GUIDs, and a second import adds none.
+Only registered flag/explanation fields may change in the existing ten fields.
+Combined installation in both language orders yields **2,261 notes / 6,972 cards**.
+Ruff, Biome and Git whitespace checks pass. Original release ZIPs are retained.
+
+Chrome 156.0.8078.48 / Playwright passed **56 scenarios** at **360, 393, 412
+and 1920 CSS px**, light and dark: **111,552 card-side evaluations** and
+**448 screenshots**, with no overflow, missing/distorted images, hidden notes or
+excess map-panel width. An additional **84 focused screenshots** at 393 px cover
+the corrected descriptions, Northern Ireland and the new Northern Mariana Islands
+flag question/answer in every language and both themes. All 235 full flags were
+also visually inspected in two contact sheets.
+Reports: `build/qa/flag-validation.json`, `flag-release-verification.json`,
+`layout-verification.json`, `flag-corrections-visual.json`,
+`flag-fixed-audit.json` and `flag-change-boundaries.json`. The focused answers
+were visually inspected in all seven languages and both themes. Native Anki GUI, AnkiDroid, AnkiMobile and
+physical devices were not run. These are browser checks and native backend tests.
+
+## 2026-10-27: pronunciation fields and bounded map panels
+
+Source/build version: **2026.10.27**, locally generated and not published.
+The seven original `build/Ultimate_Geography_2026.10.25_<LANG>.zip` files were
+verified against their APKG manifests before work. They remain unchanged.
+
+Both Brain Brew recipes, source validation and all seven native APKG exports
+passed on **CPython 3.14.8**, with Anki backend **26.9.3** and Node.js **24.22.1**.
+Ten regression tests passed, including UTF-8 checks, control-word
+pronunciations and hint visibility for all four card types in every language.
+Ruff lint/format, Biome format/check, lockfile and Git whitespace checks passed.
+The earlier Python matrix below is historical; the new tests were run locally
+on 3.14.8, not on all six interpreters. No dependencies were added or updated.
+
+### Content and update integrity
+
+`Country_Pronunciation` and `Capital_Pronunciation` are appended after the ten
+existing fields. All seven retain **323 notes, 982 cards and 550 media**.
+No missing/unused media, empty cards, template errors, personal scheduling,
+review history or custom study presets were found in clean public imports.
+Repeated imports, independent rebuilds and coexistence of all seven languages
+passed; the combined collection contains **2,261 notes and 6,874 cards**.
+
+Each actual 2026.10.25 package was imported into a disposable collection, a card
+was reviewed using Anki's scheduler, and the new package was imported twice.
+All existing ten field values, GUIDs, card IDs, scheduling columns and review
+events were preserved; new fields matched the editable CSVs. No duplicate or
+renamed pronunciation fields were created. No real user profile was opened.
+Reports: `build/qa/pronunciation-validation.json` and `release-verification.json`.
+
+There are **3,262 nonempty pronunciation fields**: RU 538, EN 537, ES 499,
+DE 541, FR 530, JA 122 and PT-BR 495. The audit covers **3,815 individual names**,
+with **3,279 readings** and **536 documented exemptions**. All 534 previously
+unresolved rows now have sourced decisions; none remains `unverified`. See
+`PRONUNCIATION.md` for the distinction between target-language pronunciation,
+local aliases, explicitly labelled foreign variants and orthographic exemptions.
+No native-language editorial certification is claimed. The new regression tests
+reject missing/stale/duplicate names, unresolved statuses, fake exemptions,
+empty IPA and foreign hints without visible language labels.
+
+### Rendering
+
+Installed **Chrome 156.0.8078.48**, driven headlessly by Playwright, passed
+**56 scenarios** at **360, 393, 412 and 1920 CSS px**, light and dark themes:
+**109,984 card-side layout evaluations** and **448 screenshots**. No horizontal
+overflow, broken/distorted images, hidden notes, oversized map panels or incorrect
+mobile stacking were found. A separate focused run generated **126 screenshots**,
+covering all four questions/answers with pronunciation examples at 393 px and
+England's answer at 1920 px, for every language and both themes. After the
+last source-language label and Timor-component clarifications, a focused follow-up
+checked **38 affected card sides in 304 viewport/theme combinations**. No
+overflow or clipped pronunciation text was found. This includes named Gulf
+Arabic/Mandinka labels and the Māori/Irish local aliases. Report:
+`build/qa/completion-label-verification.json`; screenshots: `completion-labels/`.
+
+The strengthened desktop regression was also evaluated against every rendered
+card side in all seven languages and both themes: **14 scenarios, 27,496
+card-side evaluations**, with no excess empty width inside map panels. Its
+report is `build/qa/map-panel-verification.json`.
+
+The focused questions/answers were visually inspected in all seven languages,
+including long names, Russian combining accents, IPA and Japanese glyphs.
+England's desktop answer was inspected in EN/light and JA/dark. Across all seven
+languages and both themes its map panel is **534 px**, image **500 px**, and
+unused content width **0 px**, excluding the intentional padding and border.
+The grid no longer assigns an unbounded `1fr` track to a 760 px limited image;
+map panels follow intrinsic image dimensions. Their source media are unchanged.
+Reports/screenshots: `build/qa/layout-verification.json`,
+`pronunciation-visual-verification.json`, `pronunciation-screenshots/` and
+`pronunciation-contact/`. Native Anki GUI, AnkiDroid, AnkiMobile and physical
+phones were not run. These are browser viewport checks, not device/client tests.
+
 ## 2026-10-25: seven localized variants
 
 Current source/build version: **2026.10.25**. Standard variants RU,

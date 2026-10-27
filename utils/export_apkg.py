@@ -16,7 +16,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 from anki.collection import Collection
 from anki.import_export_pb2 import ExportAnkiPackageOptions, ExportLimit
-from locales import LANGUAGES, MODEL_IDS, RELEASE, SOURCE_EPOCH
+from locales import CARD_COUNT, LANGUAGES, MODEL_IDS, RELEASE, SOURCE_EPOCH
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -75,7 +75,7 @@ def export(language, output):
             did = col.decks.add_normal_deck_with_name(f"Ultimate Geography [{language}]").id
             d = col.decks.get(did)
             d["desc"] = (
-                "Ultimate Geography multilingual fork. 323 notes, 982 cards. "
+                f"Ultimate Geography multilingual fork. 323 notes, {CARD_COUNT} cards. "
                 "Sources and licenses accompany this package in the release ZIP."
             )
             col.decks.update_dict(d)
@@ -87,7 +87,7 @@ def export(language, output):
                 col.add_note(n, did)
             for filename in sorted(referenced):
                 shutil.copyfile(source / "media" / filename, Path(col.media.dir()) / filename)
-            assert col.note_count() == 323 and col.card_count() == 982
+            assert col.note_count() == 323 and col.card_count() == CARD_COUNT
             assert not col.get_empty_cards().notes
             assert col.db.scalar("select count(*) from revlog") == 0
             # Fixed source revision date allows ordinary Anki 'if newer' updates.
@@ -107,7 +107,7 @@ def export(language, output):
     manifest = {
         "language": language,
         "notes": len(deck["notes"]),
-        "cards": 982,
+        "cards": CARD_COUNT,
         "media": len(referenced),
         "content_sha256": hashlib.sha256(
             json.dumps(
@@ -141,9 +141,14 @@ def package_release(package):
         ROOT / "CODE_OF_CONDUCT.md",
         ROOT / "SECURITY.md",
         ROOT / "doc" / "content-sources.csv",
+        ROOT / "doc" / "flag-corrections.csv",
         ROOT / "doc" / "icon.svg",
         ROOT / "doc" / "reference-audit.json",
         ROOT / "doc" / "VALIDATION.md",
+        ROOT / "doc" / "PRONUNCIATION.md",
+        ROOT / "doc" / "pronunciation-sources.csv",
+        ROOT / "doc" / "pronunciation-coverage.csv",
+        ROOT / "doc" / "pronunciation-rules.csv",
     ]
     with ZipFile(package.with_suffix(".zip"), "w", ZIP_DEFLATED) as z:
         z.write(package, package.name)

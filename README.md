@@ -4,8 +4,9 @@
 
 ![7 languages](https://img.shields.io/badge/languages-7-23465a)
 ![323 notes per language](https://img.shields.io/badge/notes-323%20per%20language-57939a)
-![982 cards per language](https://img.shields.io/badge/cards-982%20per%20language-57939a)
-[![Content: Unlicense](https://img.shields.io/badge/content-Unlicense-blue)](LICENSE.md)
+![996 cards per language](https://img.shields.io/badge/cards-996%20per%20language-57939a)
+[![Original content: Unlicense](https://img.shields.io/badge/content-Unlicense-blue)](LICENSE.md)
+[![Pronunciation data: CC BY-SA 4.0](https://img.shields.io/badge/pronunciation-CC_BY--SA_4.0-blue)](doc/PRONUNCIATION.md)
 [![Media: individual licenses](https://img.shields.io/badge/media-individual%20licenses-lightgrey)](sources.csv)
 
 [Русская документация](README.ru.md)
@@ -17,12 +18,12 @@ This fork incorporates a corrected Russian reference APKG,
 localizes its explanations, and retains the upstream CSV/Brain Brew workflow.
 It is an independent fork, not an official upstream release.
 
-Each language has **323 notes and 982 cards**, using the original four directions:
+Each language has **323 notes and 996 cards**, using the original four directions:
 country → capital, capital → country, flag → country, and map → geographical
 feature. No new directions or categories were added. Four map-only notes already
 in upstream are absent from the supplied reference; they are retained here.
 
-The fork adds 221 flag descriptions and 323 map explanations, precise distinctions
+The fork adds 235 flag descriptions and 323 map explanations, precise distinctions
 between capitals and seats of government, and the reference's left-aligned,
 responsive layout. Extra information is always visible on the answer. Standalone
 map panels have a bounded width. Personal priority decks, grading rules and study
@@ -31,9 +32,36 @@ and [dated primary sources](doc/content-sources.csv) for deliberate differences.
 English, Spanish, German and French retain their established upstream names and
 note GUIDs. Japanese and Brazilian Portuguese have separate identities; upstream
 European Portuguese (`PT`) remains available as a separate legacy variant.
-[Release 2026.10.25](https://github.com/0then0/ultimate-geography/releases/tag/v2026.10.25)
+[Release 2026.10.27](https://github.com/0then0/ultimate-geography/releases/tag/v2026.10.27)
 contains all seven languages; the earlier 2026.10.20 release contains RU/EN only.
 See [CHANGELOG.md](CHANGELOG.md).
+
+## Pronunciation in the current source revision
+
+The 2026.10.27 release appends optional country/capital pronunciation fields.
+Russian uses stress marks, other languages use sourced IPA or explicit stress
+guides, and Japanese adds kana readings for kanji. Foreign readings state their
+actual language; French hints do not invent lexical stress. Ordinary name
+spellings and existing GUIDs are unchanged. Hints appear only next to a name that
+is already shown. The map/image panels now follow the image width instead of
+stretching into the remaining desktop space.
+
+See [pronunciation rules and attribution](doc/PRONUNCIATION.md), the per-entry
+[source register](doc/pronunciation-sources.csv) and the full
+[coverage audit](doc/pronunciation-coverage.csv). All **3,815 individual names** have a sourced reading or a documented,
+rule-backed exemption. There are **3,262 nonempty hint fields**; the audit
+distinguishes target-language readings from explicitly labelled foreign variants. The source CSVs and audit registers accompany the release ZIPs.
+
+## Flag coverage
+
+The current sources add 14 territorial flags to existing notes, with one new
+flag-to-territory card each. Note GUIDs and existing cards are retained.
+Northern Ireland explains the Union Flag status; Belfast’s city flag is not
+used as a territorial flag. Saint Lucia’s triangle layering and Vatican key
+translations are corrected. The New Caledonia caption identifies the Kanak/FLNKS
+flag and distinguishes it from the French national flag.
+See the [dated correction register](doc/flag-corrections.csv). This does not
+introduce city flags or claim complete coverage of every regional flag.
 
 ## Install
 
@@ -118,11 +146,11 @@ For the reference upgrade/history regression test, pass
 package tests without the private reference file. `uv sync --locked --group export`
 installs the build, lint and export dependencies together in advance.
 
-Outputs: `build/releases/Ultimate_Geography_2026.10.25_<LANG>.apkg` for
+Outputs: `build/releases/Ultimate_Geography_2026.10.27_<LANG>.apkg` for
 `RU`, `EN`, `ES`, `DE`, `FR`, `JA` and `PT-BR`, corresponding
 ZIPs with licenses and attribution, and JSON manifests with package and semantic
 content hashes. `SOURCE_DATE_EPOCH` sets the source modification date for a new
-release (default: 2026-10-25 UTC); advance it when publishing changed content.
+release (default: 2026-10-27 UTC); advance it when publishing changed content.
 Anki assigns fresh internal database IDs and ZIP metadata during export, so APKG
 bytes may differ between builds. GUIDs, fields, templates and semantic hashes are
 reproducible. The reference APKG is needed only for the optional comparison audit,
@@ -192,7 +220,7 @@ Verified tooling: Anki backend **26.9.3** and Chromium **156.0.8078.4**.
 
 ## License and attribution
 
-The deck content, code, templates and project icon are **Unlicense**, as in
+The original deck content, code, templates and project icon are **Unlicense**, as in
 upstream. Images are excluded from that dedication and retain their original
 licenses. [sources.csv](sources.csv) preserves upstream source links, licenses and
 modification notes; [media-attribution.csv](media-attribution.csv) supplements it
@@ -211,3 +239,7 @@ Project text files use UTF-8/LF, enforced through `.editorconfig` and
 JavaScript/CSS/JSON files; Ruff formats Python. CSV, YAML, Markdown and Anki HTML
 are intentionally outside Biome's supported/safe formatting scope.
 Use the distribution-specific commands and counts above for this fork.
+
+The new pronunciation CSVs and their selection/arrangement are **CC BY-SA 4.0**;
+see [their attribution and source distinctions](doc/PRONUNCIATION.md). Preserve
+these notices and the pronunciation source/coverage registers when sharing builds.

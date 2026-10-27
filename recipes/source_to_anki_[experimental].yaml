@@ -182,6 +182,8 @@
             flag similarity  : Flag similarity
             flag note        : Flag_Note
             map note         : Map_Note
+            country pronunciation: Country_Pronunciation
+            capital pronunciation: Capital_Pronunciation
 
           personal_fields: [ ]
 
@@ -198,6 +200,8 @@
               - file: src/data/flag_similarity.csv
               - file: src/data/flag_note.csv
               - file: src/data/map_note.csv
+              - file: src/data/country_pronunciation.csv
+              - file: src/data/capital_pronunciation.csv
           note_model: Ultimate Geography [Experimental]
 
   - notes_from_csvs:
@@ -218,6 +222,8 @@
             flag similarity:de  : Flag similarity
             flag note:de       : Flag_Note
             map note:de        : Map_Note
+            country pronunciation:de: Country_Pronunciation
+            capital pronunciation:de: Capital_Pronunciation
 
           personal_fields: [ ]
 
@@ -242,6 +248,8 @@
             flag similarity:es  : Flag similarity
             flag note:es       : Flag_Note
             map note:es        : Map_Note
+            country pronunciation:es: Country_Pronunciation
+            capital pronunciation:es: Capital_Pronunciation
 
           personal_fields: [ ]
 
@@ -267,6 +275,8 @@
             flag similarity:fr  : Flag similarity
             flag note:fr       : Flag_Note
             map note:fr        : Map_Note
+            country pronunciation:fr: Country_Pronunciation
+            capital pronunciation:fr: Capital_Pronunciation
 
           personal_fields: [ ]
 
@@ -338,6 +348,8 @@
             flag similarity:ru  : Flag similarity
             flag note:ru        : Flag_Note
             map note:ru         : Map_Note
+            country pronunciation:ru: Country_Pronunciation
+            capital pronunciation:ru: Capital_Pronunciation
 
           personal_fields: [ ]
 
@@ -571,6 +583,8 @@
             flag similarity:ja  : Flag similarity
             flag note:ja        : Flag_Note
             map note:ja         : Map_Note
+            country pronunciation:ja: Country_Pronunciation
+            capital pronunciation:ja: Capital_Pronunciation
 
           personal_fields: [ ]
 
@@ -596,6 +610,8 @@
             flag similarity:pt-br  : Flag similarity
             flag note:pt-br        : Flag_Note
             map note:pt-br         : Map_Note
+            country pronunciation:pt-br: Country_Pronunciation
+            capital pronunciation:pt-br: Capital_Pronunciation
 
           personal_fields: [ ]
 

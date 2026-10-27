@@ -4,6 +4,26 @@ This changelog records changes to this independent Ultimate Geography fork.
 Dates use `YYYY-MM-DD`. Unreleased work is not part of a published package until
 it appears in a tagged GitHub release.
 
+## 2026.10.27 (2026-10-27)
+
+- Add 14 territorial flags, retaining all 323 note GUIDs and existing cards;
+  the standard deck now has 996 cards, 235 flag descriptions and 564 media.
+- Explain Northern Ireland’s Union Flag status and distinguish Belfast’s city
+  flag. Correct Saint Lucia’s triangle layering and Vatican JA/PT-BR key
+  translations; label the Kanak/FLNKS flag and its status for New Caledonia.
+- Include downloaded SVG provenance, licenses and the dated flag correction
+  register; verify exactly 14 new cards and preservation of existing reviews.
+
+- Add separate, sourced pronunciation/stress/reading hints for the seven public
+  languages, with all 3,815 individual names audited and attributed. Preserve
+  names and GUIDs; explicitly label source-language readings and local aliases.
+- Reject incomplete audits, stale names, undocumented exemptions, empty IPA and
+  foreign readings without visible language labels. Package the rule register.
+- Make desktop map panels follow image dimensions, removing the wide empty area
+  to the right; retain proportional images and stacked mobile panels.
+- Check pronunciation visibility, source provenance, and migration from the
+  actual 2026.10.25 packages with review history preserved.
+
 ## 2026.10.25 (2026-10-25)
 
 - Add the shared responsive interface and flag/map explanations to Spanish,

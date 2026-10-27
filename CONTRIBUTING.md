@@ -8,6 +8,15 @@ and [SECURITY.md](SECURITY.md) for private security reporting.
 
 ## Localized source workflow
 
+Pronunciation hints live in `country_pronunciation.csv` and
+`capital_pronunciation.csv`, with their source/coverage registers in `doc/`.
+Read [PRONUNCIATION.md](doc/PRONUNCIATION.md) before editing them. Every individual
+name needs a sourced reading or a documented exemption from the rule register.
+Foreign readings must visibly identify their actual language; local aliases must
+not be presented as the pronunciation of a different exonym. Preserve
+standard spellings and append fields rather than changing established ordinals.
+Do not run live dictionary extraction as part of a build.
+
 The new explanations live in `src/data/flag_note.csv` and `map_note.csv`.
 English uses the unsuffixed field; other languages use `:<code>`, including
 `:ja` and `:pt-br`. Add or edit translations in the existing derivative CSVs.

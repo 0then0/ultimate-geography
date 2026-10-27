@@ -1,6 +1,6 @@
 [project]
 name = "ultimate-geography"
-version = "2026.10.25"
+version = "2026.10.27"
 description = "Editable multilingual geography decks for Anki"
 requires-python = ">=3.10,<3.16"
 dependencies = [

@@ -23,6 +23,9 @@ async function main() {
       // One shared stylesheet, all Anki-rendered questions/answers. This checks
       // real content including the longest names, not synthetic placeholders.
       const docs = cards.map((x) => fs.readFileSync(x.path, 'utf8'));
+      const hintsByPath = new Map(
+        cards.map((entry, i) => [entry.path, docs[i].includes('<div class="ug-pronunciation">')]),
+      );
       const styles = docs[0].match(/<style[^>]*>[\s\S]*?<\/style>/g).join('\n');
       const contents = docs
         .map(
@@ -77,6 +80,19 @@ async function main() {
               (e) => getComputedStyle(e).display === 'none',
             ).length;
             const grids = [...document.querySelectorAll('.ug-media-grid')];
+            // A bounded image inside a 1fr column used to leave a large empty
+            // panel to its right on desktop, despite passing overflow checks.
+            const oversizedMapPanels = [...document.querySelectorAll('.ug-map-block')].filter(
+              (el) => el.getBoundingClientRect().width > 797,
+            ).length;
+            const emptyMapPanels = [...document.querySelectorAll('.ug-map-block')].filter((el) => {
+              if (viewport !== 1920) return false;
+              const img = el.querySelector('.ug-map img');
+              const style = getComputedStyle(el);
+              const contentWidth =
+                el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+              return img && contentWidth - img.getBoundingClientRect().width > 2;
+            }).length;
             const stacked = grids.every(
               (e) => getComputedStyle(e).gridTemplateColumns.split(' ').length === 1,
             );
@@ -87,6 +103,8 @@ async function main() {
               brokenImages,
               distortedImages,
               invisibleNotes,
+              oversizedMapPanels,
+              emptyMapPanels,
               stacked,
             };
           });
@@ -95,6 +113,8 @@ async function main() {
             measured.brokenImages ||
             measured.distortedImages ||
             measured.invisibleNotes ||
+            measured.oversizedMapPanels ||
+            measured.emptyMapPanels ||
             (width < 900 && !measured.stacked)
           )
             throw new Error(JSON.stringify({ language, width, dark, measured }));
@@ -115,7 +135,12 @@ async function main() {
             for (const side of ['question', 'answer']) {
               const entry = cards
                 .filter((x) => x.type === type && x.side === side)
-                .sort((a, b) => b.country.length - a.country.length)[0];
+                .sort((a, b) => {
+                  return (
+                    Number(hintsByPath.get(b.path)) - Number(hintsByPath.get(a.path)) ||
+                    b.country.length - a.country.length
+                  );
+                })[0];
               await page.goto(pathToFileURL(entry.path).href);
               await page
                 .locator('body')

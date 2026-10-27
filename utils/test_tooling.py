@@ -1,5 +1,6 @@
 """Regression checks for release tooling; build and export all supported languages before running."""
 
+import copy
 import csv
 import hashlib
 import json
@@ -11,12 +12,139 @@ import unittest
 from pathlib import Path
 from zipfile import ZipFile
 
-from locales import LANGUAGES
+from locales import CARD_COUNT, LANGUAGES
 
 ROOT = Path(__file__).resolve().parent.parent
 
 
 class ToolingTests(unittest.TestCase):
+    def test_territorial_flags_and_corrections(self):
+        from verify_sources import read_csv
+
+        main = {r["country"]: r for r in read_csv(ROOT / "src/data/main.csv")}
+        notes = {r["country"]: r for r in read_csv(ROOT / "src/data/flag_note.csv")}
+        corrections = read_csv(ROOT / "doc/flag-corrections.csv")
+        added = [r["country"] for r in corrections if "Flag" in r["fields"].split("|")]
+        self.assertEqual(len(added), 14)
+        self.assertEqual(sum(bool(r["flag"]) for r in main.values()), 235)
+        for country in added:
+            self.assertTrue(main[country]["flag"], country)
+            for language in LANGUAGES:
+                key = "flag note" + ("" if language == "EN" else ":" + language.lower())
+                self.assertTrue(notes[country][key], (country, language))
+        # A city flag must not become an ambiguous territory-identification card.
+        self.assertEqual(main["Northern Ireland"]["flag"], "")
+        info = next(
+            r
+            for r in read_csv(ROOT / "src/data/country_info.csv")
+            if r["country"] == "Northern Ireland"
+        )
+        for language in LANGUAGES:
+            key = "country info" + ("" if language == "EN" else ":" + language.lower())
+            self.assertIn("<br>", info[key])
+        self.assertNotIn("teclas", notes["Vatican City"]["flag note:pt-br"])
+        self.assertNotIn("十字キー", notes["Vatican City"]["flag note:ja"])
+        self.assertIn("chaves", notes["Vatican City"]["flag note:pt-br"])
+        self.assertIn("鍵", notes["Vatican City"]["flag note:ja"])
+        self.assertIn("in front of the black", notes["Saint Lucia"]["flag note"])
+        for language in LANGUAGES:
+            key = "flag note" + ("" if language == "EN" else ":" + language.lower())
+            self.assertIn("FLNKS", notes["New Caledonia"][key])
+
+    def test_complete_pronunciation_audit(self):
+        from verify_sources import read_csv, verify_pronunciations
+
+        coverage = read_csv(ROOT / "doc/pronunciation-coverage.csv")
+        sources = read_csv(ROOT / "doc/pronunciation-sources.csv")
+        verify_pronunciations(ROOT / "src/data", coverage=coverage, sources=sources)
+        self.assertEqual(len(coverage), 3815)
+        for defect in ("missing", "stale", "duplicate", "unreviewed", "fake-exemption"):
+            with self.subTest(defect=defect):
+                changed = copy.deepcopy(coverage)
+                if defect == "missing":
+                    changed.pop()
+                elif defect == "duplicate":
+                    changed.append(changed[0])
+                elif defect == "stale":
+                    changed[0]["name"] = "Nonexistent place"
+                elif defect == "unreviewed":
+                    changed[0]["status"] = "unverified"
+                else:
+                    changed[0].update(hint="", status="orthographic-rule", rule="JA-KANA")
+                with self.assertRaises(AssertionError):
+                    verify_pronunciations(ROOT / "src/data", coverage=changed, sources=sources)
+
+    def test_foreign_pronunciation_requires_visible_language(self):
+        from verify_sources import read_csv, verify_pronunciations
+
+        sources = read_csv(ROOT / "doc/pronunciation-sources.csv")
+        foreign = next(r for r in sources if r["display_label"])
+        self.assertIn(f"({foreign['reading_language']})", foreign["display_label"])
+        for defect in ("label", "hint"):
+            changed = copy.deepcopy(sources)
+            target = next(r for r in changed if r["display_label"])
+            target["display_label" if defect == "label" else "hint"] = (
+                "" if defect == "label" else "//"
+            )
+            with self.subTest(defect=defect), self.assertRaises(AssertionError):
+                verify_pronunciations(ROOT / "src/data", sources=changed)
+
+    def test_pronunciation_control_words(self):
+        with (ROOT / "src/data/country_pronunciation.csv").open(encoding="utf-8", newline="") as f:
+            countries = {r["country"]: r for r in csv.DictReader(f)}
+        # Protect against dictionary templates resolving a placeholder page
+        # instead of their geographic entry, and against losing combining marks.
+        self.assertEqual(countries["Russia"]["country pronunciation:ru"], "Росси́я")
+        self.assertEqual(countries["Japan"]["country pronunciation:ja"], "にほん")
+        self.assertIn("ɪŋ", countries["England"]["country pronunciation"])
+        self.assertIn("ɲ", countries["Spain"]["country pronunciation:es"])
+        self.assertNotIn("api", countries["Spain"]["country pronunciation:es"])
+        self.assertIn("ɐ", countries["England"]["country pronunciation:pt-br"])
+        self.assertNotEqual(countries["England"]["country pronunciation:pt-br"], "/aˈpi/")
+        with (ROOT / "src/data/capital_pronunciation.csv").open(encoding="utf-8", newline="") as f:
+            capitals = {r["country"]: r for r in csv.DictReader(f)}
+        # A local alias is a different word, not an IPA reading of the exonym.
+        self.assertIn("Te Whanganui-a-Tara", capitals["New Zealand"]["capital pronunciation:pt-br"])
+        self.assertIn("Béal Feirste", capitals["Northern Ireland"]["capital pronunciation:pt-br"])
+        self.assertIn("árabe del Golfo", countries["Kuwait"]["country pronunciation:es"])
+        self.assertIn("mandinka", capitals["The Gambia"]["capital pronunciation:es"])
+        self.assertTrue(countries["Timor Sea"]["country pronunciation"].startswith("Timor: "))
+        self.assertIn(" · Timor:", countries["Timor Sea"]["country pronunciation:fr"])
+
+    def test_pronunciations_follow_visible_names(self):
+        from anki.collection import Collection
+        from export_apkg import RELEASE
+        from verify_release import import_package
+
+        for language in LANGUAGES:
+            with self.subTest(language=language), tempfile.TemporaryDirectory() as tmp:
+                c = Collection(str(Path(tmp) / "collection.anki2"))
+                try:
+                    import_package(
+                        c,
+                        ROOT / "build/releases" / f"Ultimate_Geography_{RELEASE}_{language}.apkg",
+                    )
+                    tested = set()
+                    for nid in c.find_notes(""):
+                        note = c.get_note(nid)
+                        if not note["Country_Pronunciation"] or not note["Capital_Pronunciation"]:
+                            continue
+                        if not note["Flag"]:
+                            continue
+                        for card in note.cards():
+                            front = card.question()
+                            back = card.answer()
+                            count = front.count('<div class="ug-pronunciation">')
+                            self.assertEqual(count, 1 if card.ord < 2 else 0)
+                            self.assertIn(note["Country_Pronunciation"], back)
+                            self.assertIn(note["Capital_Pronunciation"], back)
+                            tested.add(card.ord)
+                        if len(tested) == 4:
+                            break
+                    self.assertEqual(tested, {0, 1, 2, 3})
+                finally:
+                    c.close()
+
     def run_python(self, *args, cwd=ROOT):
         # Exercise UTF-8 files with Python's UTF-8 mode and locale coercion off.
         env = dict(
@@ -145,7 +273,9 @@ class ToolingTests(unittest.TestCase):
             result = self.run_python("-c", code, ROOT / "utils", qa)
             self.assert_success(result)
             report = json.loads((qa / "release-verification.json").read_text(encoding="utf-8"))
-            self.assertEqual(report["bilingual_both_orders"], {"notes": 646, "cards": 1964})
+            self.assertEqual(
+                report["bilingual_both_orders"], {"notes": 646, "cards": (2 * CARD_COUNT)}
+            )
             for language in LANGUAGES:
                 self.assertTrue(
                     report["languages"][language][
@@ -154,10 +284,10 @@ class ToolingTests(unittest.TestCase):
                 )
             self.assertEqual(
                 report["multilingual_both_orders"],
-                {"notes": 323 * len(LANGUAGES), "cards": 982 * len(LANGUAGES)},
+                {"notes": 323 * len(LANGUAGES), "cards": CARD_COUNT * len(LANGUAGES)},
             )
             cards = json.loads((qa / "cards.json").read_text(encoding="utf-8"))
-            self.assertEqual(len(cards), 1964 * len(LANGUAGES))
+            self.assertEqual(len(cards), (2 * CARD_COUNT) * len(LANGUAGES))
             self.assertTrue(any(c["country"] == "Соединённые Штаты Америки" for c in cards))
 
 

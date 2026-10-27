@@ -1,0 +1,6 @@
+rule,language,description,source
+JA-KANA,JA,Kana spelling already gives segmental reading; not pitch accent.,https://www.bunka.go.jp/kokugo_nihongo/sisaku/joho/joho/kijun/naikaku/gairai/kunrei.html
+RU-MONOSYLLABLE,RU,Exactly one Russian vowel nucleus; stress position is unambiguous.,https://gramota.ru/biblioteka/slovari/russkij-orfograficheskij-slovar/udarenie-proiznoshenie
+ES-STRESS,ES,Written accent or reviewed adapted spelling and regular Spanish stress. Excludes unadapted foreign names.,https://www.rae.es/dpd/tilde
+PT-STRESS,PT-BR,Written acute/circumflex or ordinary Portuguese lexical parts. A nasal tilde alone is not evidence of stress.,https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/decreto/d6583.htm
+COMMON-WORDS,EN DE FR,All lexical parts are ordinary vocabulary with individually linked dictionary readings in the audit reason and evidence; no exceptional proper-name part remains.,https://en.wiktionary.org/wiki/Wiktionary:Pronunciation
